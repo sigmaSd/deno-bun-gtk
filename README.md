@@ -111,6 +111,10 @@ The repository's `examples/` directory contains sample applications:
   - List boxes
   - Scrolled windows
   - Frames and containers
+- **`async-demo.ts`**: Demonstrates async/await with EventLoop:
+  - Fetching data from APIs
+  - Using setTimeout and Promises
+  - Running multiple async operations in parallel
 
 Run examples:
 
@@ -120,6 +124,9 @@ deno run --allow-ffi examples/simple.ts
 
 # Widgets demo
 deno run --allow-ffi examples/widgets-demo.ts
+
+# Async/await demo (requires network permission)
+deno run --allow-ffi --allow-net examples/async-demo.ts
 ```
 
 ## Available Widgets
@@ -186,8 +193,83 @@ import {
 import { HeaderBar, PreferencesWindow, StyleManager } from "jsr:@sigmasd/gtk";
 
 // Import event loop utilities (optional)
-import { runMainLoop } from "jsr:@sigmasd/gtk/eventloop";
+import { EventLoop } from "jsr:@sigmasd/gtk/eventloop";
 ```
+
+## Event Loop Integration
+
+By default, GTK's `app.run()` blocks JavaScript's event loop, preventing
+`async/await` from working. The `EventLoop` class provides a solution by
+integrating GLib's MainContext with Deno's event loop.
+
+### Using EventLoop
+
+```typescript
+import { Application, ApplicationWindow, Button } from "jsr:@sigmasd/gtk";
+import { EventLoop } from "jsr:@sigmasd/gtk/eventloop";
+
+const app = new Application("com.example.App", 0);
+const eventLoop = new EventLoop();
+
+app.connect("activate", () => {
+  const win = new ApplicationWindow(app);
+  win.setTitle("Async Example");
+  win.setDefaultSize(400, 300);
+
+  const button = new Button("Fetch Data");
+  button.connect("clicked", async () => {
+    // Now you can use async/await!
+    const response = await fetch("https://api.example.com/data");
+    const data = await response.json();
+    console.log("Fetched data:", data);
+  });
+
+  win.setChild(button);
+  win.setProperty("visible", true);
+});
+
+// Use eventLoop.start() instead of app.run()
+await eventLoop.start(app);
+```
+
+### EventLoop Options
+
+```typescript
+// Configure poll interval (default: 16ms)
+const eventLoop = new EventLoop({
+  pollInterval: 16, // Check for events every 16ms when idle
+});
+```
+
+The EventLoop uses a hybrid approach:
+
+- **When active**: Sub-millisecond latency using microtasks
+- **When idle**: Sleeps to conserve CPU resources
+
+### When to Use EventLoop
+
+Use `EventLoop` when you need:
+- ✅ `async/await` and Promises in your GTK app
+- ✅ `fetch()` or other async Deno APIs
+- ✅ `setTimeout()`, `setInterval()` to work properly
+- ✅ Integration with async libraries
+
+Use standard `app.run()` when:
+- ✅ You only need synchronous GTK event handling
+- ✅ Simple applications without async operations
+
+### Important: Window Close Handling
+
+When using `EventLoop`, you **must** handle the window `close-request` signal to stop the event loop, otherwise the application will continue running in the terminal after the window closes:
+
+```typescript
+win.connect("close-request", () => {
+  eventLoop.stop();  // Stop the event loop
+  return false;      // Allow window to close
+});
+```
+
+With standard `app.run()`, the window close is handled automatically by GTK.
 
 ## API Highlights
 
@@ -273,7 +355,7 @@ Object-oriented classes that:
 gtk/
 ├── src/
 │   ├── gtk-ffi.ts      # Main FFI bindings and wrappers
-│   └── eventloop.ts    # Event loop utilities
+│   └── eventloop.ts    # Event loop for async/await support
 ├── examples/
 │   ├── simple.ts       # Simple hello world
 │   └── widgets-demo.ts # Comprehensive widget demo
@@ -281,6 +363,22 @@ gtk/
 └── README.md
 ```
 
+### Event Loop Module
+
+The `eventloop.ts` module provides:
+
+**`EventLoop` class**: Integrates GLib's MainContext with Deno's event loop
+
+- `start(app)` - Start the event loop with your application
+- `stop()` - Stop the event loop and quit the application
+- `isRunning` - Check if the event loop is running
+- `pollInterval` - Get the current poll interval
+
+**Options**:
+
+- `pollInterval` - Milliseconds to sleep when idle (default: 16)
+
+````
 ### Adding New Widgets
 
 1. Add FFI symbol definitions to the appropriate `dlopen` call
@@ -310,7 +408,7 @@ export class MyWidget extends Widget {
     gtk.symbols.gtk_my_widget_set_text(this.ptr, textCStr);
   }
 }
-```
+````
 
 ## Known Limitations
 
