@@ -11,9 +11,6 @@ function getLibPath(libName: string, soversion: string): string {
     // Try to load library - system linker will handle version resolution
     // It searches in standard locations: /usr/lib, /usr/local/lib, LD_LIBRARY_PATH
     return `${libName}.so.${soversion}`;
-  } else if (OS === "darwin") {
-    // macOS uses .dylib and typically doesn't use version numbers in the same way
-    return `${libName}.${soversion}.dylib`;
   } else if (OS === "windows") {
     // Windows uses .dll (GTK4 on Windows is uncommon but possible via MSYS2)
     const baseName = libName.replace("lib", "");
@@ -22,13 +19,59 @@ function getLibPath(libName: string, soversion: string): string {
   return `${libName}.so.${soversion}`;
 }
 
-const LIB_PATHS = {
-  gtk: getLibPath("libgtk-4", "1"),
-  adwaita: getLibPath("libadwaita-1", "0"),
-  glib: getLibPath("libglib-2.0", "0"),
-  gobject: getLibPath("libgobject-2.0", "0"),
-  gio: getLibPath("libgio-2.0", "0"),
-};
+// Helper to try multiple library paths
+function tryOpenLib(paths: string[]): string {
+  for (const path of paths) {
+    try {
+      // Try to open with a minimal symbol set to test
+      const lib = Deno.dlopen(path, {});
+      lib.close();
+      return path;
+    } catch {
+      // Library not found at this path, try next one
+      continue;
+    }
+  }
+  // Return the first path as fallback
+  return paths[0];
+}
+
+const LIB_PATHS = OS === "darwin"
+  ? {
+    // macOS: Try Homebrew paths first
+    gtk: tryOpenLib([
+      "/opt/homebrew/lib/libgtk-4.1.dylib",
+      "/usr/local/lib/libgtk-4.1.dylib",
+      "libgtk-4.1.dylib",
+    ]),
+    adwaita: tryOpenLib([
+      "/opt/homebrew/lib/libadwaita-1.dylib",
+      "/usr/local/lib/libadwaita-1.dylib",
+      "libadwaita-1.dylib",
+    ]),
+    glib: tryOpenLib([
+      "/opt/homebrew/lib/libglib-2.0.dylib",
+      "/usr/local/lib/libglib-2.0.dylib",
+      "libglib-2.0.dylib",
+    ]),
+    gobject: tryOpenLib([
+      "/opt/homebrew/lib/libgobject-2.0.dylib",
+      "/usr/local/lib/libgobject-2.0.dylib",
+      "libgobject-2.0.dylib",
+    ]),
+    gio: tryOpenLib([
+      "/opt/homebrew/lib/libgio-2.0.dylib",
+      "/usr/local/lib/libgio-2.0.dylib",
+      "libgio-2.0.dylib",
+    ]),
+  }
+  : {
+    gtk: getLibPath("libgtk-4", "1"),
+    adwaita: getLibPath("libadwaita-1", "0"),
+    glib: getLibPath("libglib-2.0", "0"),
+    gobject: getLibPath("libgobject-2.0", "0"),
+    gio: getLibPath("libgio-2.0", "0"),
+  };
 
 // Load GLib - Core utilities and main loop
 export const glib = Deno.dlopen(LIB_PATHS.glib, {

@@ -38,6 +38,7 @@ jobs:
         if: runner.os == 'macOS'
         run: |
           brew install gtk4 libadwaita
+          echo "DYLD_LIBRARY_PATH=/opt/homebrew/lib:/usr/local/lib:$DYLD_LIBRARY_PATH" >> $GITHUB_ENV
 
       - name: Install GTK dependencies (Windows)
         if: runner.os == 'Windows'
