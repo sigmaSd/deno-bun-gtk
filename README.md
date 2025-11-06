@@ -422,55 +422,6 @@ export class MyWidget extends Widget {
 - **Platform testing**: While cross-platform library loading is implemented,
   primary testing has been on Linux
 
-## Getting Started with Your First App
-
-Create a new file `my-app.ts`:
-
-```typescript
-import {
-  Application,
-  ApplicationWindow,
-  Box,
-  Button,
-  GTK_ORIENTATION_VERTICAL,
-  Label,
-} from "jsr:@sigmasd/gtk";
-
-const app = new Application("com.example.MyApp", 0);
-
-app.connect("activate", () => {
-  const win = new ApplicationWindow(app);
-  win.setTitle("My First GTK App");
-  win.setDefaultSize(400, 300);
-
-  const box = new Box(GTK_ORIENTATION_VERTICAL, 12);
-  box.setMarginTop(24);
-  box.setMarginBottom(24);
-  box.setMarginStart(24);
-  box.setMarginEnd(24);
-
-  const label = new Label("Welcome to GTK with Deno!");
-  const button = new Button("Click Me");
-
-  button.connect("clicked", () => {
-    label.setText("Button clicked!");
-  });
-
-  box.append(label);
-  box.append(button);
-  win.setChild(box);
-  win.setProperty("visible", true);
-});
-
-app.run([]);
-```
-
-Run it:
-
-```bash
-deno run --allow-ffi my-app.ts
-```
-
 ## License
 
 MIT License - See LICENSE file for details
