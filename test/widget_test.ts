@@ -45,7 +45,13 @@ function assertEquals(actual: unknown, expected: unknown, message: string) {
 }
 
 // Helper to process pending GTK events (simulate the main loop)
+// Note: On macOS, this can cause "Main Thread" issues, so we skip it
 function processPendingEvents() {
+  // Skip on macOS - AppKit requires main thread for event processing
+  if (Deno.build.os === "darwin") {
+    return;
+  }
+
   const context = glib.symbols.g_main_context_default();
   while (glib.symbols.g_main_context_pending(context)) {
     glib.symbols.g_main_context_iteration(context, false);
@@ -57,6 +63,7 @@ function clickButton(button: Button) {
   // In GTK, we can emit signals programmatically
   // The "clicked" signal is automatically handled by connected callbacks
   button.emit("clicked");
+  // Note: Event processing skipped on macOS to avoid main thread requirement
   processPendingEvents();
 }
 
