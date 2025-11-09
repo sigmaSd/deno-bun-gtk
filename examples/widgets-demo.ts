@@ -105,19 +105,19 @@ class WidgetsDemoWindow {
     box.setMarginEnd(8);
 
     const button1 = new Button("Click Me!");
-    button1.connect("clicked", () => {
+    button1.onClick(() => {
       this.#counter++;
       this.#updateOutput(`Button clicked! Count: ${this.#counter}`);
     });
 
     const button2 = new Button("Reset Counter");
-    button2.connect("clicked", () => {
+    button2.onClick(() => {
       this.#counter = 0;
       this.#updateOutput("Counter reset to 0");
     });
 
     const button3 = new Button("Say Hello");
-    button3.connect("clicked", () => {
+    button3.onClick(() => {
       this.#updateOutput("Hello from GTK! 👋");
     });
 
@@ -142,7 +142,7 @@ class WidgetsDemoWindow {
     entry.setProperty("hexpand", true);
 
     const submitButton = new Button("Submit");
-    submitButton.connect("clicked", () => {
+    submitButton.onClick(() => {
       const text = entry.getText();
       if (text) {
         this.#updateOutput(`You entered: "${text}"`);
@@ -152,7 +152,7 @@ class WidgetsDemoWindow {
     });
 
     const clearButton = new Button("Clear");
-    clearButton.connect("clicked", () => {
+    clearButton.onClick(() => {
       entry.setText("");
       this.#updateOutput("Entry cleared");
     });
@@ -185,8 +185,7 @@ class WidgetsDemoWindow {
     const dropdown = new DropDown(stringList);
     dropdown.setProperty("hexpand", true);
 
-    dropdown.connect("notify::selected", () => {
-      const selected = dropdown.getSelected();
+    dropdown.onSelectedChanged((selected) => {
       const color = colors[selected];
       this.#updateOutput(`Selected color: ${color} (index: ${selected})`);
     });
@@ -218,9 +217,6 @@ class WidgetsDemoWindow {
       "ℹ️ About",
     ];
 
-    // Store rows for later reference
-    const rows: ListBoxRow[] = [];
-
     for (const item of items) {
       const row = new ListBoxRow();
       const label = new Label(item);
@@ -231,18 +227,11 @@ class WidgetsDemoWindow {
       label.setMarginEnd(12);
       row.setChild(label);
       listBox.append(row);
-      rows.push(row);
     }
 
-    listBox.connect("row-activated", (...args: unknown[]) => {
-      const rowPtr = args[1] as Deno.PointerValue;
-      // Find which row was activated
-      for (let i = 0; i < rows.length; i++) {
-        if (rows[i].ptr === rowPtr) {
-          this.#updateOutput(`List item activated: ${items[i]}`);
-          break;
-        }
-      }
+    listBox.onRowActivated((_row, index) => {
+      const item = items[index];
+      this.#updateOutput(`List item activated: ${item}`);
     });
 
     const scrolled = new ScrolledWindow();
@@ -272,7 +261,7 @@ class WidgetsDemoApp {
   constructor() {
     this.#app = new Application(APP_ID, APP_FLAGS);
 
-    this.#app.connect("activate", () => {
+    this.#app.onActivate(() => {
       console.log("Application activated");
       if (!this.#win) {
         this.#win = new WidgetsDemoWindow(this.#app);

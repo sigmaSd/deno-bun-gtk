@@ -318,6 +318,7 @@ export const gtk = Deno.dlopen(LIB_PATHS.gtk, {
     parameters: ["pointer", "pointer"],
     result: "void",
   },
+  gtk_list_box_row_get_index: { parameters: ["pointer"], result: "i32" },
   gtk_string_list_new: { parameters: ["pointer"], result: "pointer" },
   gtk_string_list_append: { parameters: ["pointer", "buffer"], result: "void" },
   gtk_string_list_get_string: {

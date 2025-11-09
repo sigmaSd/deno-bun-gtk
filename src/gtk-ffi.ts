@@ -132,6 +132,11 @@ function createGValue(): Uint8Array<ArrayBuffer> {
 
 // Base class for GObject wrappers
 export class GObject {
+  /**
+   * @internal
+   * Internal pointer to the underlying GTK object.
+   * Do not use directly in application code - use the high-level methods instead.
+   */
   public ptr: Deno.PointerValue;
 
   constructor(ptr: Deno.PointerValue) {
@@ -152,11 +157,13 @@ export class GObject {
     const signalCStr = cstr(signal);
     const cb = new Deno.UnsafeCallback(
       {
-        parameters: ["pointer", "pointer"],
+        parameters: ["pointer", "pointer", "pointer", "pointer", "pointer"],
         result: "void",
       } as Deno.UnsafeCallbackDefinition,
-      () => {
-        callback();
+      (_objectPtr: Deno.PointerValue, ...args: Deno.PointerValue[]) => {
+        // Pass the raw pointer arguments to the callback
+        // Higher-level wrappers will convert these as needed
+        callback(...args);
       },
     );
 
@@ -393,13 +400,27 @@ export class Application extends GObject {
       Deno.UnsafePointer.of(accelPtrs),
     );
   }
+
+  // High-level signal connection for activate
+  onActivate(callback: () => void): number {
+    return this.connect("activate", callback);
+  }
+
+  // High-level signal connection for shutdown
+  onShutdown(callback: () => void): number {
+    return this.connect("shutdown", callback);
+  }
+
+  // High-level signal connection for startup
+  onStartup(callback: () => void): number {
+    return this.connect("startup", callback);
+  }
 }
 
-// Application inhibit flags
-export const GTK_APPLICATION_INHIBIT_LOGOUT = 1 << 0;
-export const GTK_APPLICATION_INHIBIT_SWITCH = 1 << 1;
-export const GTK_APPLICATION_INHIBIT_SUSPEND = 1 << 2;
-export const GTK_APPLICATION_INHIBIT_IDLE = 1 << 3;
+export const GTK_APPLICATION_INHIBIT_LOGOUT = 1;
+export const GTK_APPLICATION_INHIBIT_SWITCH = 2;
+export const GTK_APPLICATION_INHIBIT_SUSPEND = 4;
+export const GTK_APPLICATION_INHIBIT_IDLE = 8;
 
 // GTK Window base class
 export class Window extends Widget {
@@ -443,9 +464,19 @@ export class Window extends Widget {
   destroy(): void {
     gtk.symbols.gtk_window_destroy(this.ptr);
   }
+
+  // High-level signal connection for close-request
+  onCloseRequest(callback: () => boolean): number {
+    return this.connect("close-request", callback);
+  }
+
+  // High-level signal connection for destroy
+  onDestroy(callback: () => void): number {
+    return this.connect("destroy", callback);
+  }
 }
 
-// GTK ApplicationWindow extends Window
+// GTK ApplicationWindow extends GtkWindow
 export class ApplicationWindow extends Window {
   constructor(app: Application) {
     const ptr = gtk.symbols.gtk_application_window_new(app.ptr);
@@ -499,8 +530,8 @@ export class Label extends Widget {
 
 // GTK Button
 export class Button extends Widget {
-  constructor(label: string) {
-    const labelCStr = cstr(label);
+  constructor(label?: string) {
+    const labelCStr = label ? cstr(label) : null;
     const ptr = gtk.symbols.gtk_button_new_with_label(labelCStr);
     super(ptr);
   }
@@ -508,6 +539,11 @@ export class Button extends Widget {
   setLabel(label: string): void {
     const labelCStr = cstr(label);
     gtk.symbols.gtk_button_set_label(this.ptr, labelCStr);
+  }
+
+  // High-level signal connection for clicked
+  onClick(callback: () => void): number {
+    return this.connect("clicked", callback);
   }
 }
 
@@ -586,6 +622,17 @@ export class ListBox extends Widget {
   getNextSibling(child: Deno.PointerValue): Deno.PointerValue | null {
     return gtk.symbols.gtk_widget_get_next_sibling(child);
   }
+
+  // High-level signal connection for row-activated
+  onRowActivated(callback: (row: ListBoxRow, index: number) => void): number {
+    return this.connect("row-activated", (rowPtr: Deno.PointerValue) => {
+      if (rowPtr) {
+        const row = new ListBoxRow(rowPtr);
+        const index = row.getIndex();
+        callback(row, index);
+      }
+    });
+  }
 }
 
 // GTK ListBoxRow extends GtkWidget
@@ -597,6 +644,10 @@ export class ListBoxRow extends Widget {
 
   setChild(child: Widget): void {
     gtk.symbols.gtk_list_box_row_set_child(this.ptr, child.ptr);
+  }
+
+  getIndex(): number {
+    return gtk.symbols.gtk_list_box_row_get_index(this.ptr);
   }
 }
 
@@ -620,8 +671,8 @@ export class StringList extends GObject {
 
 // GTK DropDown extends GtkWidget
 export class DropDown extends Widget {
-  constructor(model: StringList) {
-    const ptr = gtk.symbols.gtk_drop_down_new(model.ptr, null);
+  constructor(model?: GObject) {
+    const ptr = gtk.symbols.gtk_drop_down_new(model?.ptr ?? null, null);
     super(ptr);
   }
 
@@ -631,6 +682,13 @@ export class DropDown extends Widget {
 
   setSelected(position: number): void {
     gtk.symbols.gtk_drop_down_set_selected(this.ptr, position);
+  }
+
+  // High-level signal connection for selection change
+  onSelectedChanged(callback: (selectedIndex: number) => void): number {
+    return this.connect("notify::selected", () => {
+      callback(this.getSelected());
+    });
   }
 }
 
@@ -649,6 +707,16 @@ export class Entry extends Widget {
   setText(text: string): void {
     const textCStr = cstr(text);
     gtk.symbols.gtk_editable_set_text(this.ptr, textCStr);
+  }
+
+  // High-level signal connection for activate (Enter key pressed)
+  onActivate(callback: () => void): number {
+    return this.connect("activate", callback);
+  }
+
+  // High-level signal connection for changed
+  onChanged(callback: () => void): number {
+    return this.connect("changed", callback);
   }
 }
 
@@ -873,10 +941,11 @@ export class ComboRow extends ActionRow {
 }
 
 // AdwMessageDialog extends GtkWindow extends GtkWidget
+// Adwaita MessageDialog
 export class MessageDialog extends Window {
-  constructor(parent: Window | null, heading: string, body: string) {
+  constructor(parent: Window | null, heading: string, body?: string) {
     const headingCStr = cstr(heading);
-    const bodyCStr = cstr(body);
+    const bodyCStr = body ? cstr(body) : null;
     const ptr = adwaita.symbols.adw_message_dialog_new(
       parent ? parent.ptr : null,
       headingCStr,
