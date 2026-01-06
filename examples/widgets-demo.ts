@@ -33,7 +33,7 @@ class WidgetsDemoWindow {
     this.#app = app;
     this.#win = new ApplicationWindow(app);
     this.#win.setTitle("GTK Widgets Demo");
-    this.#win.setDefaultSize(800, 600);
+    this.#win.setDefaultSize(800, 700);
 
     // Create output label for displaying interactions
     this.#outputLabel = new Label("Welcome! Interact with the widgets below.");
@@ -44,10 +44,12 @@ class WidgetsDemoWindow {
   }
 
   #buildUI() {
-    // Create toolbar with header bar
-    const toolbarView = new ToolbarView();
+    // Create header bar and set it as the window's titlebar
     const headerBar = new HeaderBar();
-    toolbarView.addTopBar(headerBar);
+    this.#win.setTitlebar(headerBar);
+
+    // Create toolbar view for content
+    const toolbarView = new ToolbarView();
 
     // Main container (vertical box)
     const mainBox = new Box(GTK_ORIENTATION_VERTICAL, 12);
