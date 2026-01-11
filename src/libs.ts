@@ -446,6 +446,18 @@ export const gtk = Deno.dlopen(LIB_PATHS.gtk, {
     parameters: ["pointer", "buffer", "pointer"],
     result: "void",
   },
+  gtk_icon_theme_get_for_display: {
+    parameters: ["pointer"],
+    result: "pointer",
+  },
+  gtk_icon_theme_has_icon: {
+    parameters: ["pointer", "buffer"],
+    result: "bool",
+  },
+  gdk_display_get_default: {
+    parameters: [],
+    result: "pointer",
+  },
 });
 
 // Load Adwaita - GNOME-style widgets

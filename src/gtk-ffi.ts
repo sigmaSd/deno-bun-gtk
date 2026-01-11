@@ -1352,6 +1352,37 @@ export class Builder extends GObject {
 
 // GSimpleAction wrapper
 
+// GDK Display wrapper
+export class Display extends GObject {
+  private constructor(ptr: Deno.PointerValue) {
+    super(ptr);
+  }
+
+  static getDefault(): Display | null {
+    const ptr = gtk.symbols.gdk_display_get_default();
+    if (!ptr) return null;
+    return new Display(ptr);
+  }
+}
+
+// GTK IconTheme wrapper
+export class IconTheme extends GObject {
+  private constructor(ptr: Deno.PointerValue) {
+    super(ptr);
+  }
+
+  static getForDisplay(display: Display): IconTheme | null {
+    const ptr = gtk.symbols.gtk_icon_theme_get_for_display(display.ptr);
+    if (!ptr) return null;
+    return new IconTheme(ptr);
+  }
+
+  hasIcon(iconName: string): boolean {
+    const iconNameCStr = cstr(iconName);
+    return gtk.symbols.gtk_icon_theme_has_icon(this.ptr, iconNameCStr);
+  }
+}
+
 // Initialize Adwaita
 export function initAdwaita(): void {
   adwaita.symbols.adw_init();
