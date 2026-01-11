@@ -1,7 +1,7 @@
 // Internal module for FFI library loading
 // This file contains all dlopen calls and should not be part of the public API
 
-import "./bun-deno-compat.ts";
+import "@sigma/deno-compat";
 
 // Detect OS and set library paths
 const OS = Deno.build.os;
