@@ -3,11 +3,6 @@ import { cstr, readCStr } from "./utils.ts";
 import { Application, ListBoxRow, Widget, Window } from "./gtk.ts";
 import { createGObject } from "./gobject.ts";
 
-// Initialize Adwaita
-export function initAdwaita(): void {
-  adwaita.symbols.adw_init();
-}
-
 // LibAdwaita Window extends GtkWindow
 export class AdwWindow extends Window {
   constructor(ptr?: Deno.PointerValue) {
@@ -153,8 +148,7 @@ export class PreferencesWindow extends Window {
 // AdwActionRow extends AdwPreferencesRow extends GtkListBoxRow extends GtkWidget
 export class ActionRow extends ListBoxRow {
   constructor(ptr?: Deno.PointerValue) {
-    const actualPtr = ptr ?? createGObject("AdwActionRow");
-    if (!actualPtr) throw new Error("Failed to create ActionRow");
+    const actualPtr = ptr ?? adwaita.symbols.adw_action_row_new();
     super(actualPtr);
   }
 }
@@ -162,8 +156,7 @@ export class ActionRow extends ListBoxRow {
 // AdwComboRow extends AdwActionRow extends AdwPreferencesRow extends GtkListBoxRow extends GtkWidget
 export class ComboRow extends ActionRow {
   constructor() {
-    const ptr = createGObject("AdwComboRow");
-    if (!ptr) throw new Error("Failed to create ComboRow");
+    const ptr = adwaita.symbols.adw_combo_row_new();
     super(ptr);
   }
 }

@@ -617,18 +617,8 @@ export class Entry extends Widget {
 // GtkMenuButton extends GtkWidget
 export class MenuButton extends Widget {
   constructor() {
-    // We need createGObject here but it is in gobject.ts
-    // We can't import createGObject if gobject.ts imports gtk.ts (which it doesn't)
-    // But createGObject is simple helper using gobject.symbols.
-    // However, createGObject was exported from gtk-ffi.ts.
-    // Let's use the helper from gobject.ts.
-    // But Wait! I cannot access createGObject from here if I haven't imported it.
-    // I imported GObject. I should import createGObject too.
-    const ptr = gobject.symbols.g_type_from_name(cstr("GtkMenuButton"));
-    const actualPtr = ptr ? gobject.symbols.g_object_new(ptr, null) : null;
-    
-    if (!actualPtr) throw new Error("Failed to create MenuButton");
-    super(actualPtr);
+    const ptr = gtk.symbols.gtk_menu_button_new();
+    super(ptr);
   }
 
   setMenuModel(menu: Menu): void {

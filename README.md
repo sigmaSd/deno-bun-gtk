@@ -29,6 +29,21 @@ Import directly from JSR in your Deno/Bun project:
 import { Application, ApplicationWindow, Button, Label } from "@sigmasd/gtk"; // or directly in deno with jsr:@sigmasd/gtk
 ```
 
+### Modular Imports
+
+You can also import specific components to reduce namespace clutter:
+
+```typescript
+// Import only GTK widgets
+import { Button, Label } from "@sigmasd/gtk/gtk";
+
+// Import Adwaita widgets
+import { AdwWindow, HeaderBar } from "@sigmasd/gtk/adw";
+
+// Import Enums
+import { Orientation } from "@sigmasd/gtk/enums";
+```
+
 ## Quick Start
 
 ### Simple Example

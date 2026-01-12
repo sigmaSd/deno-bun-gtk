@@ -3,7 +3,15 @@
   "version": "0.12.1",
   "exports": {
     ".": "./src/gtk-ffi.ts",
-    "./eventloop": "./src/eventloop.ts"
+    "./eventloop": "./src/eventloop.ts",
+    "./gtk": "./src/gtk.ts",
+    "./adw": "./src/adw.ts",
+    "./gio": "./src/gio.ts",
+    "./glib": "./src/glib.ts",
+    "./gobject": "./src/gobject.ts",
+    "./cairo": "./src/cairo.ts",
+    "./utils": "./src/utils.ts",
+    "./enums": "./src/enums.ts"
   },
   "license": "MIT",
   "publish": {

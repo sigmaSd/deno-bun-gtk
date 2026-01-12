@@ -2,7 +2,15 @@
   "name": "@sigmasd/gtk",
   "type": "module",
   "exports": {
-    ".": "./src/gtk-ffi.ts"
+    ".": "./src/gtk-ffi.ts",
+    "./gtk": "./src/gtk.ts",
+    "./adw": "./src/adw.ts",
+    "./gio": "./src/gio.ts",
+    "./glib": "./src/glib.ts",
+    "./gobject": "./src/gobject.ts",
+    "./cairo": "./src/cairo.ts",
+    "./utils": "./src/utils.ts",
+    "./enums": "./src/enums.ts"
   },
   "scripts": {
     "test": "deno install && deno fmt --check && deno lint && deno check && deno test --allow-ffi"

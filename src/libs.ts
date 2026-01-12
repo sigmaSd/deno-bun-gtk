@@ -355,6 +355,8 @@ export const gtk = Deno.dlopen(LIB_PATHS.gtk, {
     parameters: ["pointer", "buffer"],
     result: "bool",
   },
+  gtk_menu_button_new: { parameters: [], result: "pointer" },
+  gtk_is_initialized: { parameters: [], result: "bool" },
   gdk_display_get_default: {
     parameters: [],
     result: "pointer",
@@ -442,6 +444,8 @@ export const adwaita = Deno.dlopen(LIB_PATHS.adwaita, {
     parameters: ["pointer", "pointer"],
     result: "void",
   },
+  adw_action_row_new: { parameters: [], result: "pointer" },
+  adw_combo_row_new: { parameters: [], result: "pointer" },
   adw_message_dialog_new: {
     parameters: ["pointer", "buffer", "buffer"],
     result: "pointer",
@@ -467,3 +471,9 @@ export const adwaita = Deno.dlopen(LIB_PATHS.adwaita, {
     result: "void",
   },
 });
+
+// Initialize Adwaita (and GTK) automatically when the library is loaded
+// Guard against double initialization which can happen when running multiple test files in the same process
+if (!gtk.symbols.gtk_is_initialized()) {
+  adwaita.symbols.adw_init();
+}

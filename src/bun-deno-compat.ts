@@ -112,13 +112,13 @@ if (navigator.userAgent.startsWith("Bun")) {
 
     static UnsafePointerView = class UnsafePointerView {
       static getCString(pointer: any) {
-        return new CString(pointer);
+        return new CString(pointer).toString();
       }
 
       constructor(public ptr: any) {}
 
       getCString() {
-        return new CString(this.ptr);
+        return new CString(this.ptr).toString();
       }
     };
 
@@ -140,6 +140,31 @@ if (navigator.userAgent.startsWith("Bun")) {
         return pointer;
       }
     };
+
+    static async test(
+      name: string | object,
+      fnOrOptions?: Function | object,
+      maybeFn?: Function,
+    ) {
+      const testName = typeof name === "string" ? name : (name as any).name;
+      // Handle overload: test(name, fn) vs test(name, options, fn)
+      let testFn: Function;
+
+      if (typeof fnOrOptions === "function") {
+        testFn = fnOrOptions;
+      } else if (typeof name !== "string" && (name as any).fn) {
+        testFn = (name as any).fn;
+      } else {
+        testFn = maybeFn!;
+      }
+
+      try {
+        const { test } = await import("bun:test");
+        test(testName, testFn as any);
+      } catch (e) {
+        console.error("Failed to load bun:test", e);
+      }
+    }
   }
 
   (globalThis as any).Deno = DenoCompat;

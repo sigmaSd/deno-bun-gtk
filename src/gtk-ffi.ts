@@ -56,16 +56,22 @@
  * @module
  */
 
-import { initAdwaita } from "./adw.ts";
+import "./libs.ts";
+
+
 
 export * from "./enums.ts";
-export * from "./utils.ts";
-export * from "./gobject.ts";
-export * from "./gio.ts";
-export * from "./glib.ts";
-export * from "./cairo.ts";
-export * from "./gtk.ts";
-export * from "./adw.ts";
 
-// Initialize GTK and Adwaita
-initAdwaita();
+export * from "./utils.ts";
+
+export * from "./gobject.ts";
+
+export * from "./gio.ts";
+
+export * from "./glib.ts";
+
+export * from "./cairo.ts";
+
+export * from "./gtk.ts";
+
+export * from "./adw.ts";
