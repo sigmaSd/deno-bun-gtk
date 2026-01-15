@@ -13,7 +13,7 @@ import {
   GTK_ORIENTATION_VERTICAL,
   Label,
 } from "../src/gtk-ffi.ts";
-import { glib, gtk } from "../src/libs.ts";
+import { gtk } from "../src/libs.ts";
 
 function assert(condition: boolean, message: string) {
   if (!condition) {
@@ -32,22 +32,10 @@ function assertEquals(actual: unknown, expected: unknown, message: string) {
   }
 }
 
-// Helper to process pending GTK events (simulate the main loop)
-function processPendingEvents() {
-  if (Deno.build.os === "darwin") {
-    return;
-  }
-
-  const context = glib.symbols.g_main_context_default();
-  while (glib.symbols.g_main_context_pending(context)) {
-    glib.symbols.g_main_context_iteration(context, false);
-  }
-}
-
 // Helper to simulate button click by triggering the "clicked" signal
 function clickButton(button: Button) {
   button.emit("clicked");
-  processPendingEvents();
+  // Signal emission is synchronous, no need to process events
 }
 
 // Initialize GTK for testing
@@ -301,8 +289,6 @@ Deno.test("CheckButton", testOptions, () => {
 
   checkBtn.setActive(true);
 
-  processPendingEvents();
-
   assert(
     checkBtn.getActive() === true,
     "CheckButton is active after toggling on",
@@ -317,8 +303,6 @@ Deno.test("CheckButton", testOptions, () => {
   // Toggle off
 
   checkBtn.setActive(false);
-
-  processPendingEvents();
 
   assert(
     checkBtn.getActive() === false,
