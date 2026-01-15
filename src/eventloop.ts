@@ -98,7 +98,6 @@ export class EventLoop {
         );
       } else {
         idleCount++;
-        console.log(idleCount);
         // Exponential backoff: 16ms, 32ms, 64ms, ... up to 250ms
         const delay = Math.min(
           this.#pollInterval * Math.pow(2, Math.min(idleCount, 4)),
