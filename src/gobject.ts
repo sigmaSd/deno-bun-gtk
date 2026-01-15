@@ -1,5 +1,5 @@
 import { gobject } from "./libs.ts";
-import { cstr, createGValue, readCStr } from "./utils.ts";
+import { createGValue, cstr, readCStr } from "./utils.ts";
 import {
   G_TYPE_BOOLEAN,
   G_TYPE_INT,

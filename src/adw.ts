@@ -1,7 +1,6 @@
 import { adwaita, gobject } from "./libs.ts";
 import { cstr, readCStr } from "./utils.ts";
 import { Application, ListBoxRow, Widget, Window } from "./gtk.ts";
-import { createGObject } from "./gobject.ts";
 
 // LibAdwaita Window extends GtkWindow
 export class AdwWindow extends Window {

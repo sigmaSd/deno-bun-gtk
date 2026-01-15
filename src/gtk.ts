@@ -1,12 +1,5 @@
-import { adwaita, gio, gobject, gtk } from "./libs.ts";
+import { adwaita, gio, gtk } from "./libs.ts";
 import { cstr, readCStr } from "./utils.ts";
-import {
-  G_TYPE_BOOLEAN,
-  G_TYPE_INT,
-  G_TYPE_OBJECT,
-  G_TYPE_STRING,
-  G_TYPE_UINT,
-} from "./enums.ts";
 import { GObject } from "./gobject.ts";
 import { Menu, SimpleAction } from "./gio.ts";
 import { CairoContext } from "./cairo.ts";
