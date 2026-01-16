@@ -13,7 +13,6 @@ import {
   GTK_ORIENTATION_VERTICAL,
   Label,
 } from "../src/gtk-ffi.ts";
-import { gtk } from "../src/libs.ts";
 
 function assert(condition: boolean, message: string) {
   if (!condition) {
@@ -37,10 +36,6 @@ function clickButton(button: Button) {
   button.emit("clicked");
   // Signal emission is synchronous, no need to process events
 }
-
-// Initialize GTK for testing
-
-gtk.symbols.gtk_init();
 
 const testOptions = { sanitizeResources: false, sanitizeOps: false };
 
