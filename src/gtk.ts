@@ -524,6 +524,16 @@ export class ListBox extends Widget {
     gtk.symbols.gtk_list_box_set_selection_mode(this.ptr, mode);
   }
 
+  getSelectedRow(): ListBoxRow | null {
+    const ptr = gtk.symbols.gtk_list_box_get_selected_row(this.ptr);
+    if (!ptr) return null;
+    return new ListBoxRow(ptr);
+  }
+
+  selectRow(row: ListBoxRow | null): void {
+    gtk.symbols.gtk_list_box_select_row(this.ptr, row ? row.ptr : null);
+  }
+
   getFirstChild(): Deno.PointerValue | null {
     return gtk.symbols.gtk_widget_get_first_child(this.ptr);
   }
