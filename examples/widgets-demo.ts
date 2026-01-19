@@ -2,26 +2,27 @@
 
 import {
   Application,
+  ApplicationFlags,
   ApplicationWindow,
   Box,
   Button,
   DropDown,
   Entry,
   Frame,
-  GTK_ORIENTATION_HORIZONTAL,
-  GTK_ORIENTATION_VERTICAL,
   HeaderBar,
   Label,
   ListBox,
   ListBoxRow,
+  Orientation,
   ScrolledWindow,
+  SelectionMode,
   StringList,
   ToolbarView,
   type Widget,
 } from "@sigmasd/gtk";
 
 const APP_ID = "com.example.WidgetsDemo";
-const APP_FLAGS = 0;
+const APP_FLAGS = ApplicationFlags.NONE;
 
 class WidgetsDemoWindow {
   #app: Application;
@@ -37,8 +38,8 @@ class WidgetsDemoWindow {
 
     // Create output label for displaying interactions
     this.#outputLabel = new Label("Welcome! Interact with the widgets below.");
-    this.#outputLabel.setProperty("wrap", true);
-    this.#outputLabel.setProperty("xalign", 0);
+    this.#outputLabel.setWrap(true);
+    this.#outputLabel.setXalign(0);
 
     this.#buildUI();
   }
@@ -52,7 +53,7 @@ class WidgetsDemoWindow {
     const toolbarView = new ToolbarView();
 
     // Main container (vertical box)
-    const mainBox = new Box(GTK_ORIENTATION_VERTICAL, 12);
+    const mainBox = new Box(Orientation.VERTICAL, 12);
     mainBox.setMarginTop(12);
     mainBox.setMarginBottom(12);
     mainBox.setMarginStart(12);
@@ -69,11 +70,11 @@ class WidgetsDemoWindow {
 
     // Create scrolled window for content
     const scrolled = new ScrolledWindow();
-    scrolled.setProperty("vexpand", true);
-    scrolled.setProperty("hexpand", true);
+    scrolled.setVexpand(true);
+    scrolled.setHexpand(true);
 
     // Content box
-    const contentBox = new Box(GTK_ORIENTATION_VERTICAL, 12);
+    const contentBox = new Box(Orientation.VERTICAL, 12);
     contentBox.setMarginTop(12);
     contentBox.setMarginBottom(12);
     contentBox.setMarginStart(12);
@@ -100,7 +101,7 @@ class WidgetsDemoWindow {
 
   #createButtonSection(): Widget {
     const frame = new Frame("Buttons");
-    const box = new Box(GTK_ORIENTATION_HORIZONTAL, 8);
+    const box = new Box(Orientation.HORIZONTAL, 8);
     box.setMarginTop(8);
     box.setMarginBottom(8);
     box.setMarginStart(8);
@@ -133,15 +134,15 @@ class WidgetsDemoWindow {
 
   #createEntrySection(): Widget {
     const frame = new Frame("Text Entry");
-    const box = new Box(GTK_ORIENTATION_HORIZONTAL, 8);
+    const box = new Box(Orientation.HORIZONTAL, 8);
     box.setMarginTop(8);
     box.setMarginBottom(8);
     box.setMarginStart(8);
     box.setMarginEnd(8);
 
     const entry = new Entry();
-    entry.setProperty("placeholder-text", "Type something here...");
-    entry.setProperty("hexpand", true);
+    entry.setPlaceholderText("Type something here...");
+    entry.setHexpand(true);
 
     const submitButton = new Button("Submit");
     submitButton.onClick(() => {
@@ -169,7 +170,7 @@ class WidgetsDemoWindow {
 
   #createDropdownSection(): Widget {
     const frame = new Frame("Dropdown Selection");
-    const box = new Box(GTK_ORIENTATION_HORIZONTAL, 8);
+    const box = new Box(Orientation.HORIZONTAL, 8);
     box.setMarginTop(8);
     box.setMarginBottom(8);
     box.setMarginStart(8);
@@ -185,7 +186,7 @@ class WidgetsDemoWindow {
     }
 
     const dropdown = new DropDown(stringList);
-    dropdown.setProperty("hexpand", true);
+    dropdown.setHexpand(true);
 
     dropdown.onSelectedChanged((selected) => {
       const color = colors[selected];
@@ -201,14 +202,14 @@ class WidgetsDemoWindow {
 
   #createListBoxSection(): Widget {
     const frame = new Frame("List Box");
-    const outerBox = new Box(GTK_ORIENTATION_VERTICAL, 8);
+    const outerBox = new Box(Orientation.VERTICAL, 8);
     outerBox.setMarginTop(8);
     outerBox.setMarginBottom(8);
     outerBox.setMarginStart(8);
     outerBox.setMarginEnd(8);
 
     const listBox = new ListBox();
-    listBox.setProperty("selection-mode", 1); // GTK_SELECTION_SINGLE
+    listBox.setSelectionMode(SelectionMode.SINGLE);
 
     const items = [
       "📚 Documentation",
@@ -222,7 +223,7 @@ class WidgetsDemoWindow {
     for (const item of items) {
       const row = new ListBoxRow();
       const label = new Label(item);
-      label.setProperty("xalign", 0);
+      label.setXalign(0);
       label.setMarginTop(12);
       label.setMarginBottom(12);
       label.setMarginStart(12);
@@ -252,7 +253,7 @@ class WidgetsDemoWindow {
   }
 
   present() {
-    this.#win.setProperty("visible", true);
+    this.#win.setVisible(true);
   }
 }
 

@@ -2,16 +2,17 @@
 
 import {
   Application,
+  ApplicationFlags,
   ApplicationWindow,
   Box,
   Button,
-  GTK_ORIENTATION_VERTICAL,
   Label,
+  Orientation,
 } from "@sigmasd/gtk";
 import { EventLoop } from "../src/eventloop.ts";
 
 const APP_ID = "com.example.AsyncDemo";
-const APP_FLAGS = 0;
+const APP_FLAGS = ApplicationFlags.NONE;
 
 class AsyncDemoApp {
   #app: Application;
@@ -22,7 +23,7 @@ class AsyncDemoApp {
     this.#app = new Application(APP_ID, APP_FLAGS);
     this.#eventLoop = new EventLoop({ pollInterval: 16 });
 
-    this.#app.connect("activate", () => {
+    this.#app.onActivate(() => {
       this.#buildUI();
     });
   }
@@ -32,7 +33,7 @@ class AsyncDemoApp {
     win.setTitle("Async/Await Demo");
     win.setDefaultSize(500, 400);
 
-    const box = new Box(GTK_ORIENTATION_VERTICAL, 12);
+    const box = new Box(Orientation.VERTICAL, 12);
     box.setMarginTop(24);
     box.setMarginBottom(24);
     box.setMarginStart(24);
@@ -40,40 +41,40 @@ class AsyncDemoApp {
 
     // Title
     const title = new Label("GTK + Deno Event Loop Demo");
-    title.setProperty("wrap", true);
+    title.setWrap(true);
     box.append(title);
 
     // Status label
     this.#statusLabel = new Label("Ready to make async calls...");
-    this.#statusLabel.setProperty("wrap", true);
+    this.#statusLabel.setWrap(true);
     this.#statusLabel.setMarginTop(12);
     this.#statusLabel.setMarginBottom(12);
     box.append(this.#statusLabel);
 
     // Fetch button
     const fetchButton = new Button("Fetch from API");
-    fetchButton.connect("clicked", async () => {
+    fetchButton.onClick(async () => {
       await this.#fetchData();
     });
     box.append(fetchButton);
 
     // Timeout button
     const timeoutButton = new Button("Delayed Action (3s)");
-    timeoutButton.connect("clicked", async () => {
+    timeoutButton.onClick(async () => {
       await this.#delayedAction();
     });
     box.append(timeoutButton);
 
     // Multiple async operations button
     const multiButton = new Button("Multiple Async Operations");
-    multiButton.connect("clicked", async () => {
+    multiButton.onClick(async () => {
       await this.#multipleOperations();
     });
     box.append(multiButton);
 
     // Quit button
     const quitButton = new Button("Quit");
-    quitButton.connect("clicked", () => {
+    quitButton.onClick(() => {
       this.#eventLoop.stop();
     });
     box.append(quitButton);
@@ -86,7 +87,7 @@ class AsyncDemoApp {
     });
 
     win.setChild(box);
-    win.setProperty("visible", true);
+    win.present();
   }
 
   async #fetchData() {

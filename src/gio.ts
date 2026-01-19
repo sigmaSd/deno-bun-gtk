@@ -45,6 +45,10 @@ export class File extends GObject {
     return new File(ptr);
   }
 
+  static getType(): bigint {
+    return BigInt(gio.symbols.g_file_get_type());
+  }
+
   getPath(): string | null {
     const ptr = gio.symbols.g_file_get_path(this.ptr);
     return ptr ? readCStr(ptr) : null;

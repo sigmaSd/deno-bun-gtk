@@ -1,19 +1,24 @@
 import {
   Application,
+  ApplicationFlags,
   ApplicationWindow,
   Box,
   CheckButton,
   Label,
+  Orientation,
 } from "@sigmasd/gtk";
 
-const app = new Application("com.example.CheckButtonDemo", 0);
+const app = new Application(
+  "com.example.CheckButtonDemo",
+  ApplicationFlags.NONE,
+);
 
-app.connect("activate", () => {
+app.onActivate(() => {
   const win = new ApplicationWindow(app);
   win.setTitle("CheckButton Demo");
   win.setDefaultSize(300, 200);
 
-  const box = new Box(1, 10); // Vertical box, 10px spacing
+  const box = new Box(Orientation.VERTICAL, 10);
   box.setMarginTop(20);
   box.setMarginBottom(20);
   box.setMarginStart(20);

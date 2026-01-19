@@ -159,6 +159,7 @@ export const gio = Deno.dlopen(LIB_PATHS.gio, {
     parameters: ["pointer", "pointer", "pointer", "pointer", "pointer"],
     result: "bool",
   },
+  g_file_get_type: { parameters: [], result: "u64" },
 });
 
 // Load GTK4 - Widget toolkit
@@ -187,6 +188,8 @@ export const gtk = Deno.dlopen(LIB_PATHS.gtk, {
   gtk_label_get_text: { parameters: ["pointer"], result: "pointer" },
   gtk_label_set_markup: { parameters: ["pointer", "buffer"], result: "void" },
   gtk_label_set_use_markup: { parameters: ["pointer", "bool"], result: "void" },
+  gtk_label_set_wrap: { parameters: ["pointer", "bool"], result: "void" },
+  gtk_label_set_xalign: { parameters: ["pointer", "f32"], result: "void" },
   gtk_button_new_with_label: { parameters: ["buffer"], result: "pointer" },
   gtk_button_set_label: { parameters: ["pointer", "buffer"], result: "void" },
   gtk_check_button_new: { parameters: [], result: "pointer" },
@@ -344,6 +347,10 @@ export const gtk = Deno.dlopen(LIB_PATHS.gtk, {
     result: "void",
   },
   gtk_entry_new: { parameters: [], result: "pointer" },
+  gtk_entry_set_placeholder_text: {
+    parameters: ["pointer", "buffer"],
+    result: "void",
+  },
   gtk_editable_get_text: { parameters: ["pointer"], result: "pointer" },
   gtk_editable_set_text: { parameters: ["pointer", "buffer"], result: "void" },
   gtk_application_inhibit: {
@@ -422,6 +429,7 @@ export const gtk = Deno.dlopen(LIB_PATHS.gtk, {
     result: "pointer",
   },
   gtk_file_filter_new: { parameters: [], result: "pointer" },
+  gtk_file_filter_get_type: { parameters: [], result: "u64" },
   gtk_file_filter_set_name: {
     parameters: ["pointer", "buffer"],
     result: "void",

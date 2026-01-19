@@ -2,15 +2,16 @@
 
 import {
   Application,
+  ApplicationFlags,
   ApplicationWindow,
   Box,
   Button,
-  GTK_ORIENTATION_VERTICAL,
   Label,
+  Orientation,
 } from "@sigmasd/gtk";
 
 const APP_ID = "com.example.SimpleDemo";
-const APP_FLAGS = 0;
+const APP_FLAGS = ApplicationFlags.NONE;
 
 class SimpleApp {
   #app: Application;
@@ -19,14 +20,14 @@ class SimpleApp {
   constructor() {
     this.#app = new Application(APP_ID, APP_FLAGS);
 
-    this.#app.connect("activate", () => {
+    this.#app.onActivate(() => {
       if (!this.#win) {
         this.#win = new ApplicationWindow(this.#app);
         this.#win.setTitle("Simple GTK Demo");
         this.#win.setDefaultSize(400, 300);
 
         // Create a vertical box container
-        const box = new Box(GTK_ORIENTATION_VERTICAL, 12);
+        const box = new Box(Orientation.VERTICAL, 12);
         box.setMarginTop(24);
         box.setMarginBottom(24);
         box.setMarginStart(24);
@@ -38,7 +39,7 @@ class SimpleApp {
 
         // Create a button
         const button = new Button("Click Me!");
-        button.connect("clicked", () => {
+        button.onClick(() => {
           label.setText("Button was clicked! 🎉");
           console.log("Button clicked!");
         });
@@ -46,13 +47,13 @@ class SimpleApp {
 
         // Create a quit button
         const quitButton = new Button("Quit");
-        quitButton.connect("clicked", () => {
+        quitButton.onClick(() => {
           this.#app.quit();
         });
         box.append(quitButton);
 
         this.#win.setChild(box);
-        this.#win.setProperty("visible", true);
+        this.#win.present();
       }
     });
   }

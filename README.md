@@ -51,21 +51,22 @@ import { Orientation } from "@sigmasd/gtk/enums";
 ```typescript
 import {
   Application,
+  ApplicationFlags,
   ApplicationWindow,
   Box,
   Button,
-  GTK_ORIENTATION_VERTICAL,
   Label,
+  Orientation,
 } from "@sigmasd/gtk";
 
-const app = new Application("com.example.HelloWorld", 0);
+const app = new Application("com.example.HelloWorld", ApplicationFlags.NONE);
 
-app.connect("activate", () => {
+app.onActivate(() => {
   const win = new ApplicationWindow(app);
   win.setTitle("Hello World");
   win.setDefaultSize(400, 300);
 
-  const box = new Box(GTK_ORIENTATION_VERTICAL, 12);
+  const box = new Box(Orientation.VERTICAL, 12);
   box.setMarginTop(24);
   box.setMarginBottom(24);
   box.setMarginStart(24);
@@ -75,13 +76,13 @@ app.connect("activate", () => {
   box.append(label);
 
   const button = new Button("Click Me!");
-  button.connect("clicked", () => {
+  button.onClick(() => {
     label.setText("Button clicked! 🎉");
   });
   box.append(button);
 
   win.setChild(box);
-  win.setProperty("visible", true);
+  win.present();
 });
 
 app.run([]);
@@ -182,10 +183,7 @@ import {
 } from "@sigmasd/gtk";
 
 // Import constants
-import {
-  GTK_ORIENTATION_HORIZONTAL,
-  GTK_ORIENTATION_VERTICAL,
-} from "@sigmasd/gtk";
+import { Align, ApplicationFlags, Orientation } from "@sigmasd/gtk";
 
 // Import Adwaita widgets
 import { HeaderBar, PreferencesWindow, StyleManager } from "@sigmasd/gtk";
@@ -203,19 +201,24 @@ integrating GLib's MainContext with Deno/Bun's event loop.
 ### Using EventLoop
 
 ```typescript
-import { Application, ApplicationWindow, Button } from "@sigmasd/gtk";
+import {
+  Application,
+  ApplicationFlags,
+  ApplicationWindow,
+  Button,
+} from "@sigmasd/gtk";
 import { EventLoop } from "@sigmasd/gtk/eventloop";
 
-const app = new Application("com.example.App", 0);
+const app = new Application("com.example.App", ApplicationFlags.NONE);
 const eventLoop = new EventLoop();
 
-app.connect("activate", () => {
+app.onActivate(() => {
   const win = new ApplicationWindow(app);
   win.setTitle("Async Example");
   win.setDefaultSize(400, 300);
 
   const button = new Button("Fetch Data");
-  button.connect("clicked", async () => {
+  button.onClick(async () => {
     // Now you can use async/await!
     const response = await fetch("https://api.github.com/repos/denoland/deno");
     const data = await response.json();
@@ -223,7 +226,7 @@ app.connect("activate", () => {
   });
 
   win.setChild(button);
-  win.setProperty("visible", true);
+  win.present();
 });
 
 // Use eventLoop.start() instead of app.run()
@@ -288,19 +291,19 @@ const entry = new Entry();
 
 ```typescript
 // Type-safe property setting
-widget.setProperty("visible", true);
-widget.setProperty("margin-top", 12);
-widget.setProperty("halign", 3); // GTK_ALIGN_CENTER
+widget.setVisible(true);
+widget.setMarginTop(12);
+widget.setHalign(Align.CENTER);
 ```
 
 ### Connecting Signals
 
 ```typescript
-button.connect("clicked", () => {
+button.onClick(() => {
   console.log("Button clicked!");
 });
 
-window.connect("close-request", () => {
+window.onCloseRequest(() => {
   console.log("Window closing");
   return false; // Allow close
 });
@@ -309,7 +312,7 @@ window.connect("close-request", () => {
 ### Container Management
 
 ```typescript
-const box = new Box(GTK_ORIENTATION_VERTICAL, 12);
+const box = new Box(Orientation.VERTICAL, 12);
 box.append(label);
 box.append(button);
 box.remove(button);
@@ -318,9 +321,9 @@ box.remove(button);
 ### Application Lifecycle
 
 ```typescript
-const app = new Application("com.example.App", 0);
+const app = new Application("com.example.App", ApplicationFlags.NONE);
 
-app.connect("activate", () => {
+app.onActivate(() => {
   // Create and show your main window
 });
 

@@ -300,6 +300,14 @@ export class Label extends Widget {
   setUseMarkup(useMarkup: boolean): void {
     gtk.symbols.gtk_label_set_use_markup(this.ptr, useMarkup);
   }
+
+  setWrap(wrap: boolean): void {
+    gtk.symbols.gtk_label_set_wrap(this.ptr, wrap);
+  }
+
+  setXalign(xalign: number): void {
+    gtk.symbols.gtk_label_set_xalign(this.ptr, xalign);
+  }
 }
 
 // GTK Button
@@ -645,6 +653,11 @@ export class Entry extends Widget {
   setText(text: string): void {
     const textCStr = cstr(text);
     gtk.symbols.gtk_editable_set_text(this.ptr, textCStr);
+  }
+
+  setPlaceholderText(text: string): void {
+    const textCStr = cstr(text);
+    gtk.symbols.gtk_entry_set_placeholder_text(this.ptr, textCStr);
   }
 
   // High-level signal connection for activate (Enter key pressed)
@@ -1116,6 +1129,9 @@ export class FileFilter extends GObject {
   constructor() {
     const ptr = gtk.symbols.gtk_file_filter_new();
     super(ptr);
+  }
+  static getType(): bigint {
+    return BigInt(gtk.symbols.gtk_file_filter_get_type());
   }
   setName(name: string): void {
     gtk.symbols.gtk_file_filter_set_name(this.ptr, cstr(name));
