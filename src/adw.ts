@@ -47,11 +47,19 @@ export class HeaderBar extends Widget {
 }
 
 // AdwAboutDialog extends AdwDialog extends GtkWidget
-// Note: AdwDialog is not GtkWindow in GTK4, it's a separate widget
 export class AboutDialog extends Widget {
   constructor() {
     const ptr = adwaita.symbols.adw_about_dialog_new();
     super(ptr);
+  }
+
+  present(parent?: Widget): void {
+    if (adwaita.symbols.adw_dialog_present) {
+      adwaita.symbols.adw_dialog_present(this.ptr, parent ? parent.ptr : null);
+    } else {
+      // Fallback for older libadwaita where it is a Window
+      this.setProperty("visible", true);
+    }
   }
 
   setApplicationName(name: string): void {
@@ -74,16 +82,45 @@ export class AboutDialog extends Widget {
     adwaita.symbols.adw_about_dialog_set_comments(this.ptr, commentsCStr);
   }
 
-  setTransientFor(parent: Widget): void {
-    this.setProperty("transient-for", parent.ptr);
-  }
-
   setModal(modal: boolean): void {
     this.setProperty("modal", modal);
   }
 
   show(): void {
     this.setProperty("visible", true);
+  }
+
+  setWebsite(url: string): void {
+    adwaita.symbols.adw_about_dialog_set_website(this.ptr, cstr(url));
+  }
+
+  setIssueUrl(url: string): void {
+    adwaita.symbols.adw_about_dialog_set_issue_url(this.ptr, cstr(url));
+  }
+
+  setDevelopers(developers: string[]): void {
+    // const char** developers
+    const ptrs = new BigUint64Array(developers.length + 1);
+    developers.forEach((dev, i) => {
+      const c = cstr(dev);
+      ptrs[i] = BigInt(Deno.UnsafePointer.value(Deno.UnsafePointer.of(c)!));
+    });
+    ptrs[developers.length] = 0n;
+    adwaita.symbols.adw_about_dialog_set_developers(
+      this.ptr,
+      Deno.UnsafePointer.of(ptrs),
+    );
+  }
+
+  setLicenseType(type: number): void {
+    adwaita.symbols.adw_about_dialog_set_license_type(this.ptr, type);
+  }
+
+  setApplicationIcon(iconName: string): void {
+    adwaita.symbols.adw_about_dialog_set_application_icon(
+      this.ptr,
+      cstr(iconName),
+    );
   }
 }
 
@@ -259,5 +296,18 @@ export class StyleManager {
     return adwaita.symbols.adw_style_manager_get_color_scheme(
       this.ptr,
     ) as number;
+  }
+}
+
+export class Clamp extends Widget {
+  constructor() {
+    const ptr = adwaita.symbols.adw_clamp_new();
+    super(ptr);
+  }
+  setMaximumSize(size: number): void {
+    adwaita.symbols.adw_clamp_set_maximum_size(this.ptr, size);
+  }
+  setChild(child: Widget): void {
+    adwaita.symbols.adw_clamp_set_child(this.ptr, child.ptr);
   }
 }

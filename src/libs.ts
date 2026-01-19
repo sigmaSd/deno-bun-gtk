@@ -23,6 +23,10 @@ export const glib = Deno.dlopen(LIB_PATHS.glib, {
   g_free: { parameters: ["pointer"], result: "void" },
   g_strdup: { parameters: ["pointer"], result: "pointer" },
   g_malloc0: { parameters: ["usize"], result: "pointer" },
+  g_unix_signal_add: {
+    parameters: ["i32", "function", "pointer"],
+    result: "u32",
+  },
 });
 
 // Load Cairo - 2D Graphics Library
@@ -147,6 +151,12 @@ export const gio = Deno.dlopen(LIB_PATHS.gio, {
   g_task_propagate_pointer: {
     parameters: ["pointer", "pointer"],
     result: "pointer",
+  },
+  g_file_new_for_path: { parameters: ["buffer"], result: "pointer" },
+  g_file_get_path: { parameters: ["pointer"], result: "buffer" },
+  g_file_load_contents: {
+    parameters: ["pointer", "pointer", "pointer", "pointer", "pointer"],
+    result: "bool",
   },
 });
 
@@ -357,6 +367,100 @@ export const gtk = Deno.dlopen(LIB_PATHS.gtk, {
   },
   gtk_menu_button_new: { parameters: [], result: "pointer" },
   gtk_is_initialized: { parameters: [], result: "bool" },
+  gtk_css_provider_new: { parameters: [], result: "pointer" },
+  gtk_css_provider_load_from_data: {
+    parameters: ["pointer", "buffer", "i64"],
+    result: "void",
+  },
+  gtk_style_context_add_provider_for_display: {
+    parameters: ["pointer", "pointer", "u32"],
+    result: "void",
+  },
+  gtk_widget_get_style_context: { parameters: ["pointer"], result: "pointer" },
+  gtk_style_context_add_class: {
+    parameters: ["pointer", "buffer"],
+    result: "void",
+  },
+  gtk_style_context_remove_class: {
+    parameters: ["pointer", "buffer"],
+    result: "void",
+  },
+  gtk_drop_target_new: { parameters: ["u64", "i32"], result: "pointer" },
+  gtk_event_controller_key_new: { parameters: [], result: "pointer" },
+  gtk_widget_add_controller: {
+    parameters: ["pointer", "pointer"],
+    result: "void",
+  },
+  gtk_file_dialog_new: { parameters: [], result: "pointer" },
+  gtk_file_dialog_set_title: {
+    parameters: ["pointer", "buffer"],
+    result: "void",
+  },
+  gtk_file_dialog_set_filters: {
+    parameters: ["pointer", "pointer"],
+    result: "void",
+  },
+  gtk_file_dialog_set_default_filter: {
+    parameters: ["pointer", "pointer"],
+    result: "void",
+  },
+  gtk_file_dialog_open: {
+    parameters: ["pointer", "pointer", "pointer", "function", "pointer"],
+    result: "void",
+  },
+  gtk_file_dialog_open_finish: {
+    parameters: ["pointer", "pointer", "pointer"],
+    result: "pointer",
+  },
+  gtk_file_dialog_select_folder: {
+    parameters: ["pointer", "pointer", "pointer", "function", "pointer"],
+    result: "void",
+  },
+  gtk_file_dialog_select_folder_finish: {
+    parameters: ["pointer", "pointer", "pointer"],
+    result: "pointer",
+  },
+  gtk_file_filter_new: { parameters: [], result: "pointer" },
+  gtk_file_filter_set_name: {
+    parameters: ["pointer", "buffer"],
+    result: "void",
+  },
+  gtk_file_filter_add_pattern: {
+    parameters: ["pointer", "buffer"],
+    result: "void",
+  },
+  gtk_file_filter_add_mime_type: {
+    parameters: ["pointer", "buffer"],
+    result: "void",
+  },
+  gtk_popover_menu_new_from_model: {
+    parameters: ["pointer"],
+    result: "pointer",
+  },
+  gtk_popover_menu_set_menu_model: {
+    parameters: ["pointer", "pointer"],
+    result: "void",
+  },
+  gtk_menu_button_set_popover: {
+    parameters: ["pointer", "pointer"],
+    result: "void",
+  },
+  gtk_gesture_click_new: { parameters: [], result: "pointer" },
+  gtk_widget_set_tooltip_text: {
+    parameters: ["pointer", "buffer"],
+    result: "void",
+  },
+  gtk_box_set_spacing: { parameters: ["pointer", "i32"], result: "void" },
+  gtk_window_set_resizable: { parameters: ["pointer", "bool"], result: "void" },
+  gtk_widget_set_cursor: { parameters: ["pointer", "pointer"], result: "void" },
+  gtk_widget_set_cursor_from_name: {
+    parameters: ["pointer", "buffer"],
+    result: "void",
+  },
+  gtk_button_set_icon_name: {
+    parameters: ["pointer", "buffer"],
+    result: "void",
+  },
   gdk_display_get_default: {
     parameters: [],
     result: "pointer",
@@ -372,6 +476,38 @@ export const gtk = Deno.dlopen(LIB_PATHS.gtk, {
   gdk_clipboard_set_text: {
     parameters: ["pointer", "buffer"],
     result: "void",
+  },
+  gdk_clipboard_read_async: {
+    parameters: ["pointer", "pointer", "i32", "pointer", "function", "pointer"],
+    result: "void",
+  },
+  gdk_clipboard_read_finish: {
+    parameters: ["pointer", "pointer", "pointer", "pointer"],
+    result: "pointer",
+  },
+  gdk_clipboard_read_text_async: {
+    parameters: ["pointer", "pointer", "function", "pointer"],
+    result: "void",
+  },
+  gdk_clipboard_read_text_finish: {
+    parameters: ["pointer", "pointer", "pointer"],
+    result: "buffer",
+  },
+  gdk_clipboard_read_texture_async: {
+    parameters: ["pointer", "pointer", "function", "pointer"],
+    result: "void",
+  },
+  gdk_clipboard_read_texture_finish: {
+    parameters: ["pointer", "pointer", "pointer"],
+    result: "pointer",
+  },
+  gdk_texture_save_to_png: {
+    parameters: ["pointer", "buffer"],
+    result: "bool",
+  },
+  gdk_cursor_new_from_name: {
+    parameters: ["buffer", "pointer"],
+    result: "pointer",
   },
 });
 
@@ -482,7 +618,34 @@ export const adwaita = Deno.dlopen(LIB_PATHS.adwaita, {
     parameters: ["pointer", "pointer", "function", "pointer"],
     result: "void",
   },
+  adw_clamp_new: { parameters: [], result: "pointer" },
+  adw_clamp_set_maximum_size: {
+    parameters: ["pointer", "i32"],
+    result: "void",
+  },
+  adw_clamp_set_child: { parameters: ["pointer", "pointer"], result: "void" },
+  adw_about_dialog_set_website: {
+    parameters: ["pointer", "buffer"],
+    result: "void",
+  },
+  adw_about_dialog_set_issue_url: {
+    parameters: ["pointer", "buffer"],
+    result: "void",
+  },
+  adw_about_dialog_set_developers: {
+    parameters: ["pointer", "pointer"],
+    result: "void",
+  },
+  adw_about_dialog_set_license_type: {
+    parameters: ["pointer", "i32"],
+    result: "void",
+  },
+  adw_about_dialog_set_application_icon: {
+    parameters: ["pointer", "buffer"],
+    result: "void",
+  },
   adw_is_initialized: { parameters: [], result: "bool" },
+  adw_dialog_present: { parameters: ["pointer", "pointer"], result: "void" },
 });
 
 // Initialize Adwaita (and GTK) automatically when the library is loaded

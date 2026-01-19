@@ -74,3 +74,26 @@ export const SelectionMode = {
   BROWSE: GTK_SELECTION_BROWSE,
   MULTIPLE: GTK_SELECTION_MULTIPLE,
 };
+
+export const DragAction = {
+  COPY: 1,
+  MOVE: 2,
+  LINK: 4,
+  ASK: 8,
+};
+
+export const ModifierType = {
+  SHIFT_MASK: 1,
+  LOCK_MASK: 2,
+  CONTROL_MASK: 4,
+  ALT_MASK: 8,
+};
+
+export const Key = {
+  v: 118,
+  o: 111,
+  t: 116,
+  r: 114,
+  q: 113,
+  w: 119,
+};

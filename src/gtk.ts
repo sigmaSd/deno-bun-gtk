@@ -1,4 +1,5 @@
-import { adwaita, gio, gtk } from "./libs.ts";
+// deno-lint-ignore-file no-explicit-any
+import { adwaita, gio, glib, gobject, gtk } from "./libs.ts";
 import { cstr, readCStr } from "./utils.ts";
 import { GObject } from "./gobject.ts";
 import { Menu, SimpleAction } from "./gio.ts";
@@ -76,8 +77,25 @@ export class Widget extends GObject {
 
   getDisplay(): Display {
     const ptr = gtk.symbols.gtk_widget_get_display(this.ptr);
-    // deno-lint-ignore no-explicit-any
     return new (Display as any)(ptr);
+  }
+
+  getStyleContext(): StyleContext {
+    const ptr = gtk.symbols.gtk_widget_get_style_context(this.ptr);
+    return new StyleContext(ptr);
+  }
+
+  addController(controller: EventController): void {
+    gtk.symbols.gtk_widget_add_controller(this.ptr, controller.ptr);
+  }
+
+  setTooltipText(text: string): void {
+    const textCStr = cstr(text);
+    gtk.symbols.gtk_widget_set_tooltip_text(this.ptr, textCStr);
+  }
+
+  setCursor(cursor: Cursor | null): void {
+    gtk.symbols.gtk_widget_set_cursor(this.ptr, cursor ? cursor.ptr : null);
   }
 }
 
@@ -213,6 +231,10 @@ export class Window extends Widget {
     gtk.symbols.gtk_window_destroy(this.ptr);
   }
 
+  setResizable(resizable: boolean): void {
+    gtk.symbols.gtk_window_set_resizable(this.ptr, resizable);
+  }
+
   // High-level signal connection for close-request
   onCloseRequest(callback: () => boolean): number {
     return this.connect("close-request", callback);
@@ -245,6 +267,10 @@ export class Box extends Widget {
 
   remove(child: Widget): void {
     gtk.symbols.gtk_box_remove(this.ptr, child.ptr);
+  }
+
+  setSpacing(spacing: number): void {
+    gtk.symbols.gtk_box_set_spacing(this.ptr, spacing);
   }
 }
 
@@ -287,6 +313,11 @@ export class Button extends Widget {
   setLabel(label: string): void {
     const labelCStr = cstr(label);
     gtk.symbols.gtk_button_set_label(this.ptr, labelCStr);
+  }
+
+  setIconName(iconName: string): void {
+    const iconNameCStr = cstr(iconName);
+    gtk.symbols.gtk_button_set_icon_name(this.ptr, iconNameCStr);
   }
 
   // High-level signal connection for clicked
@@ -406,6 +437,10 @@ export class Picture extends Widget {
 
   setCanShrink(canShrink: boolean): void {
     gtk.symbols.gtk_picture_set_can_shrink(this.ptr, canShrink);
+  }
+
+  setKeepAspectRatio(keep: boolean): void {
+    this.setProperty("keep-aspect-ratio", keep);
   }
 }
 
@@ -641,6 +676,10 @@ export class MenuButton extends Widget {
   setIconName(iconName: string): void {
     this.setProperty("icon-name", iconName);
   }
+
+  setPopover(popover: Widget): void {
+    gtk.symbols.gtk_menu_button_set_popover(this.ptr, popover.ptr);
+  }
 }
 
 // GtkBuilder extends GObject
@@ -691,7 +730,6 @@ export class Display extends GObject {
 
   getClipboard(): Clipboard {
     const ptr = gtk.symbols.gdk_display_get_clipboard(this.ptr);
-    // deno-lint-ignore no-explicit-any
     return new (Clipboard as any)(ptr);
   }
 }
@@ -705,6 +743,140 @@ export class Clipboard extends GObject {
   set(text: string): void {
     const textCStr = cstr(text);
     gtk.symbols.gdk_clipboard_set_text(this.ptr, textCStr);
+  }
+
+  readAsync(
+    mimeTypes: string[],
+    priority: number,
+    cancellable: any,
+    callback: (source: Clipboard, result: any) => void,
+  ) {
+    // mimeTypes: const char**
+    // priority: int
+    // cancellable: GCancellable*
+    // callback: GAsyncReadyCallback
+
+    const cb = new Deno.UnsafeCallback(
+      {
+        parameters: ["pointer", "pointer", "pointer"],
+        result: "void",
+      } as const,
+      (
+        _source: Deno.PointerValue,
+        result: Deno.PointerValue,
+        _userData: Deno.PointerValue,
+      ) => {
+        callback(this, result);
+      },
+    );
+
+    // Construct null terminated string array
+    const ptrs = new BigUint64Array(mimeTypes.length + 1);
+    mimeTypes.forEach((mime, i) => {
+      const c = cstr(mime);
+      ptrs[i] = BigInt(Deno.UnsafePointer.value(Deno.UnsafePointer.of(c)!));
+    });
+    ptrs[mimeTypes.length] = 0n;
+
+    gtk.symbols.gdk_clipboard_read_async(
+      this.ptr,
+      Deno.UnsafePointer.of(ptrs),
+      priority,
+      cancellable,
+      cb.pointer,
+      null,
+    );
+  }
+
+  readFinish(result: any): [any, string] {
+    const outMime = new BigUint64Array(1);
+    const streamPtr = gtk.symbols.gdk_clipboard_read_finish(
+      this.ptr,
+      result,
+      Deno.UnsafePointer.of(outMime),
+      null,
+    );
+    // outMime is char** ? No, char** out_mime_type.
+    const mimePtr = Deno.UnsafePointer.create(outMime[0]);
+    const mime = mimePtr ? readCStr(mimePtr) : "";
+    return [streamPtr, mime];
+  }
+
+  readTextAsync(
+    cancellable: any,
+    callback: (source: Clipboard, result: any) => void,
+  ) {
+    const cb = new Deno.UnsafeCallback(
+      {
+        parameters: ["pointer", "pointer", "pointer"],
+        result: "void",
+      } as const,
+      (
+        _source: Deno.PointerValue,
+        result: Deno.PointerValue,
+        _userData: Deno.PointerValue,
+      ) => {
+        callback(this, result);
+      },
+    );
+    gtk.symbols.gdk_clipboard_read_text_async(
+      this.ptr,
+      cancellable,
+      cb.pointer,
+      null,
+    );
+  }
+
+  readTextFinish(result: any): string {
+    const ptr = gtk.symbols.gdk_clipboard_read_text_finish(
+      this.ptr,
+      result,
+      null,
+    );
+    return ptr ? readCStr(ptr) : "";
+  }
+
+  readTextureAsync(
+    cancellable: any,
+    callback: (source: Clipboard, result: any) => void,
+  ) {
+    const cb = new Deno.UnsafeCallback(
+      {
+        parameters: ["pointer", "pointer", "pointer"],
+        result: "void",
+      } as const,
+      (
+        _source: Deno.PointerValue,
+        result: Deno.PointerValue,
+        _userData: Deno.PointerValue,
+      ) => {
+        callback(this, result);
+      },
+    );
+    gtk.symbols.gdk_clipboard_read_texture_async(
+      this.ptr,
+      cancellable,
+      cb.pointer,
+      null,
+    );
+  }
+
+  readTextureFinish(result: any): Texture {
+    const ptr = gtk.symbols.gdk_clipboard_read_texture_finish(
+      this.ptr,
+      result,
+      null,
+    );
+    return new Texture(ptr);
+  }
+}
+
+export class Texture extends GObject {
+  constructor(ptr: Deno.PointerValue) {
+    super(ptr);
+  }
+  saveToPng(filename: string): boolean {
+    return gtk.symbols.gdk_texture_save_to_png(this.ptr, cstr(filename));
   }
 }
 
@@ -728,4 +900,292 @@ export class IconTheme extends GObject {
 
 export function addAction(app: Application, action: SimpleAction): void {
   gio.symbols.g_action_map_add_action(app.ptr, action.ptr);
+}
+
+// New additions
+
+export class CssProvider extends GObject {
+  constructor() {
+    const ptr = gtk.symbols.gtk_css_provider_new();
+    super(ptr);
+  }
+
+  loadFromData(data: string): void {
+    const dataCStr = cstr(data);
+    gtk.symbols.gtk_css_provider_load_from_data(this.ptr, dataCStr, BigInt(-1));
+  }
+}
+
+export class StyleContext extends GObject {
+  constructor(ptr: Deno.PointerValue) {
+    super(ptr);
+  }
+
+  addClass(className: string): void {
+    const classNameCStr = cstr(className);
+    gtk.symbols.gtk_style_context_add_class(this.ptr, classNameCStr);
+  }
+
+  removeClass(className: string): void {
+    const classNameCStr = cstr(className);
+    gtk.symbols.gtk_style_context_remove_class(this.ptr, classNameCStr);
+  }
+
+  static addProviderForDisplay(
+    display: Display,
+    provider: CssProvider,
+    priority: number,
+  ): void {
+    gtk.symbols.gtk_style_context_add_provider_for_display(
+      display.ptr,
+      provider.ptr,
+      priority,
+    );
+  }
+}
+
+export class EventController extends GObject {}
+
+export class Cursor extends GObject {
+  static newFromName(name: string, fallback: Cursor | null): Cursor | null {
+    const nameCStr = cstr(name);
+    const ptr = gtk.symbols.gdk_cursor_new_from_name(
+      nameCStr,
+      fallback ? fallback.ptr : null,
+    );
+    if (!ptr) return null;
+    return new Cursor(ptr);
+  }
+}
+
+export class EventControllerKey extends EventController {
+  constructor() {
+    const ptr = gtk.symbols.gtk_event_controller_key_new();
+    super(ptr);
+  }
+
+  onKeyPressed(
+    callback: (keyval: number, keycode: number, state: number) => boolean,
+  ): number {
+    const cb = new Deno.UnsafeCallback(
+      {
+        parameters: ["pointer", "u32", "u32", "i32", "pointer"],
+        result: "bool",
+      } as const,
+      (
+        _self: Deno.PointerValue,
+        keyval: number,
+        keycode: number,
+        state: number,
+        _userData: Deno.PointerValue,
+      ) => {
+        return callback(keyval, keycode, state);
+      },
+    );
+    const signalCStr = cstr("key-pressed");
+    return Number(gobject.symbols.g_signal_connect_data(
+      this.ptr,
+      signalCStr,
+      cb.pointer,
+      null,
+      null,
+      0,
+    ));
+  }
+}
+
+export class DropTarget extends EventController {
+  constructor(type: number | bigint, actions: number) {
+    const ptr = gtk.symbols.gtk_drop_target_new(BigInt(type), actions);
+    super(ptr);
+  }
+
+  onDrop(
+    callback: (value: Deno.PointerValue, x: number, y: number) => boolean,
+  ): number {
+    const cb = new Deno.UnsafeCallback(
+      {
+        parameters: ["pointer", "pointer", "f64", "f64", "pointer"],
+        result: "bool",
+      } as const,
+      (
+        _self: Deno.PointerValue,
+        value: Deno.PointerValue,
+        x: number,
+        y: number,
+        _userData: Deno.PointerValue,
+      ) => {
+        const objPtr = gobject.symbols.g_value_get_object(value);
+        return callback(objPtr, x, y);
+      },
+    );
+
+    const signalCStr = cstr("drop");
+    return Number(gobject.symbols.g_signal_connect_data(
+      this.ptr,
+      signalCStr,
+      cb.pointer,
+      null,
+      null,
+      0,
+    ));
+  }
+}
+
+export class FileDialog extends GObject {
+  constructor() {
+    const ptr = gtk.symbols.gtk_file_dialog_new();
+    super(ptr);
+  }
+  setTitle(title: string): void {
+    gtk.symbols.gtk_file_dialog_set_title(this.ptr, cstr(title));
+  }
+  setFilters(filters: GObject): void {
+    gtk.symbols.gtk_file_dialog_set_filters(this.ptr, filters.ptr);
+  }
+  setDefaultFilter(filter: FileFilter): void {
+    gtk.symbols.gtk_file_dialog_set_default_filter(this.ptr, filter.ptr);
+  }
+  open(
+    parent: Window,
+    cancellable: GObject | null,
+    callback: (source: FileDialog, result: Deno.PointerValue) => void,
+  ): void {
+    const cb = new Deno.UnsafeCallback(
+      {
+        parameters: ["pointer", "pointer", "pointer"],
+        result: "void",
+      } as const,
+      (
+        _source: Deno.PointerValue,
+        result: Deno.PointerValue,
+        _userData: Deno.PointerValue,
+      ) => {
+        callback(new FileDialog(), result);
+      },
+    );
+    gtk.symbols.gtk_file_dialog_open(
+      this.ptr,
+      parent.ptr,
+      cancellable ? cancellable.ptr : null,
+      cb.pointer,
+      null,
+    );
+  }
+  openFinish(result: Deno.PointerValue): GObject {
+    const ptr = gtk.symbols.gtk_file_dialog_open_finish(this.ptr, result, null);
+    return new GObject(ptr);
+  }
+  selectFolder(
+    parent: Window,
+    cancellable: GObject | null,
+    callback: (source: FileDialog, result: Deno.PointerValue) => void,
+  ): void {
+    const cb = new Deno.UnsafeCallback(
+      {
+        parameters: ["pointer", "pointer", "pointer"],
+        result: "void",
+      } as const,
+      (
+        _source: Deno.PointerValue,
+        result: Deno.PointerValue,
+        _userData: Deno.PointerValue,
+      ) => {
+        callback(new FileDialog(), result);
+      },
+    );
+    gtk.symbols.gtk_file_dialog_select_folder(
+      this.ptr,
+      parent.ptr,
+      cancellable ? cancellable.ptr : null,
+      cb.pointer,
+      null,
+    );
+  }
+  selectFolderFinish(result: Deno.PointerValue): GObject {
+    const ptr = gtk.symbols.gtk_file_dialog_select_folder_finish(
+      this.ptr,
+      result,
+      null,
+    );
+    return new GObject(ptr);
+  }
+}
+
+export class FileFilter extends GObject {
+  constructor() {
+    const ptr = gtk.symbols.gtk_file_filter_new();
+    super(ptr);
+  }
+  setName(name: string): void {
+    gtk.symbols.gtk_file_filter_set_name(this.ptr, cstr(name));
+  }
+  addPattern(pattern: string): void {
+    gtk.symbols.gtk_file_filter_add_pattern(this.ptr, cstr(pattern));
+  }
+  addMimeType(mimeType: string): void {
+    gtk.symbols.gtk_file_filter_add_mime_type(this.ptr, cstr(mimeType));
+  }
+}
+
+export class PopoverMenu extends Widget {
+  constructor(model?: Menu) {
+    const ptr = gtk.symbols.gtk_popover_menu_new_from_model(
+      model ? model.ptr : null,
+    );
+    super(ptr);
+  }
+  setMenuModel(model: Menu): void {
+    gtk.symbols.gtk_popover_menu_set_menu_model(this.ptr, model.ptr);
+  }
+}
+
+export class GestureClick extends EventController {
+  constructor() {
+    const ptr = gtk.symbols.gtk_gesture_click_new();
+    super(ptr);
+  }
+  onReleased(
+    callback: (n_press: number, x: number, y: number) => void,
+  ): number {
+    const cb = new Deno.UnsafeCallback(
+      {
+        parameters: ["pointer", "i32", "f64", "f64", "pointer"],
+        result: "void",
+      } as const,
+      (
+        _self: Deno.PointerValue,
+        n_press: number,
+        x: number,
+        y: number,
+        _userData: Deno.PointerValue,
+      ) => {
+        callback(n_press, x, y);
+      },
+    );
+    const signalCStr = cstr("released");
+    return Number(gobject.symbols.g_signal_connect_data(
+      this.ptr,
+      signalCStr,
+      cb.pointer,
+      null,
+      null,
+      0,
+    ));
+  }
+}
+
+export function unixSignalAdd(signum: number, callback: () => boolean): number {
+  const cb = new Deno.UnsafeCallback(
+    { parameters: ["pointer"], result: "bool" } as const,
+    (_userData: Deno.PointerValue) => {
+      return callback();
+    },
+  );
+  // @ts-ignore: glib import
+  return glib.symbols.g_unix_signal_add(signum, cb.pointer, null);
+}
+
+export function typeFromName(name: string): number | bigint {
+  return gobject.symbols.g_type_from_name(cstr(name));
 }
