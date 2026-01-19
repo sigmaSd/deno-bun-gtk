@@ -1176,6 +1176,9 @@ export class GestureClick extends EventController {
 }
 
 export function unixSignalAdd(signum: number, callback: () => boolean): number {
+  if (!glib.symbols.g_unix_signal_add) {
+    throw new Error("unixSignalAdd is not supported on this platform");
+  }
   const cb = new Deno.UnsafeCallback(
     { parameters: ["pointer"], result: "bool" } as const,
     (_userData: Deno.PointerValue) => {

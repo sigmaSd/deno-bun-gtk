@@ -26,6 +26,7 @@ export const glib = Deno.dlopen(LIB_PATHS.glib, {
   g_unix_signal_add: {
     parameters: ["i32", "function", "pointer"],
     result: "u32",
+    optional: true,
   },
 });
 
