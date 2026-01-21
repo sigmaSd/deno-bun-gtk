@@ -2,7 +2,7 @@
 import { adwaita, gio, glib, gobject, gtk } from "./libs.ts";
 import { cstr, readCStr } from "./utils.ts";
 import { GObject } from "./gobject.ts";
-import { Menu, SimpleAction } from "./gio.ts";
+import type { Menu, SimpleAction } from "./gio.ts";
 import { CairoContext } from "./cairo.ts";
 
 // GTK Widget wrapper

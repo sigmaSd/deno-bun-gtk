@@ -1,6 +1,5 @@
 {
   "name": "@sigmasd/gtk",
-  "type": "module",
   "exports": {
     ".": "./src/gtk-ffi.ts",
     "./gtk": "./src/gtk.ts",
@@ -12,10 +11,7 @@
     "./utils": "./src/utils.ts",
     "./enums": "./src/enums.ts"
   },
-  "scripts": {
-    "test": "deno install && deno fmt --check && deno lint && deno check && deno test --allow-ffi"
-  },
-  "devDependencies": {
-    "@types/bun": "^1.3.2"
+  "dependencies": {
+    "@sigma/deno-compat": "npm:@jsr/sigma__deno-compat@0.10.0"
   }
 }

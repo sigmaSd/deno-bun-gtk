@@ -1,6 +1,6 @@
 {
   "name": "@sigmasd/gtk",
-  "version": "0.18.0",
+  "version": "0.1.9",
   "exports": {
     ".": "./src/gtk-ffi.ts",
     "./eventloop": "./src/eventloop.ts",
@@ -19,5 +19,12 @@
       "src",
       "README.md"
     ]
-  }
+  },
+  "imports": {
+    "@sigma/deno-compat": "jsr:@sigma/deno-compat@^0.10.0"
+  },
+  "tasks": {
+    "test": "deno install && deno fmt --check && deno lint && deno check && deno test --allow-ffi"
+  },
+  "nodeModulesDir": "auto"
 }

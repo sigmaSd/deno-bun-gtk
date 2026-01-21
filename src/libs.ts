@@ -1,7 +1,7 @@
 // Internal module for FFI library loading
 // This file contains all dlopen calls and should not be part of the public API
 
-import "./bun-deno-compat.ts";
+import "@sigma/deno-compat";
 import { LIB_PATHS } from "./libPaths/mod.ts";
 
 // Load GLib - Core utilities and main loop
