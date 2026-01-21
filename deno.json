@@ -1,6 +1,6 @@
 {
   "name": "@sigmasd/gtk",
-  "version": "0.1.9",
+  "version": "0.19.0",
   "exports": {
     ".": "./src/gtk-ffi.ts",
     "./eventloop": "./src/eventloop.ts",
