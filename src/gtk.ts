@@ -473,7 +473,7 @@ export class DrawingArea extends Widget {
       {
         parameters: ["pointer", "pointer", "i32", "i32", "pointer"],
         result: "void",
-      } as Deno.UnsafeCallbackDefinition,
+      },
       (
         _areaPtr: Deno.PointerValue,
         crPtr: Deno.PointerValue,
@@ -484,7 +484,7 @@ export class DrawingArea extends Widget {
         const cr = new CairoContext(crPtr);
         callback(this, cr, width, height);
       },
-    );
+    ) as unknown as Deno.UnsafeCallback;
 
     gtk.symbols.gtk_drawing_area_set_draw_func(
       this.ptr,

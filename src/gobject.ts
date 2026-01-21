@@ -31,13 +31,16 @@ export class GObject {
     }
   }
 
-  connect(signal: string, callback: (...args: unknown[]) => unknown): number {
+  connect(
+    signal: string,
+    callback: (...args: Deno.PointerValue[]) => unknown,
+  ): number {
     const signalCStr = cstr(signal);
     const cb = new Deno.UnsafeCallback(
       {
         parameters: ["pointer", "pointer", "pointer", "pointer", "pointer"],
         result: "void",
-      } as Deno.UnsafeCallbackDefinition,
+      },
       (_objectPtr: Deno.PointerValue, ...args: Deno.PointerValue[]) => {
         // Pass the raw pointer arguments to the callback
         // Higher-level wrappers will convert these as needed
