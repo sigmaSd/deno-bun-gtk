@@ -12,7 +12,7 @@
  *
  * @example
  * ```typescript
- * import { Application } from "@sigmasd/gtk";
+ * import { Application } from "@sigmasd/gtk/gtk4";
  * import { EventLoop } from "@sigmasd/gtk/eventloop";
  *
  * const app = new Application("com.example.App", 0);
@@ -30,8 +30,8 @@
  * @module
  */
 
-import type { Application } from "./gtk-ffi.ts";
-import { glib } from "./libs.ts";
+import type { Application } from "./gtk4.ts";
+import { glib } from "../low/glib.ts";
 
 export interface EventLoopOptions {
   /**

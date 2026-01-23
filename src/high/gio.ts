@@ -1,5 +1,6 @@
-import { gio, glib } from "./libs.ts";
-import { cstr, readCStr } from "./utils.ts";
+import { gio } from "../low/gio.ts";
+import { glib } from "../low/glib.ts";
+import { cstr, readCStr } from "../low/utils.ts";
 import { GObject } from "./gobject.ts";
 
 // GMenu extends GMenuModel extends GObject

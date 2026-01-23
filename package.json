@@ -1,7 +1,13 @@
 {
   "name": "@sigmasd/gtk",
   "exports": {
-    ".": "./src/gtk-ffi.ts"
+    "./eventloop": "./src/high/eventloop.ts",
+    "./gtk4": "./src/high/gtk4.ts",
+    "./adw": "./src/high/adw.ts",
+    "./gio": "./src/high/gio.ts",
+    "./glib": "./src/high/glib.ts",
+    "./gobject": "./src/high/gobject.ts",
+    "./cairo": "./src/high/cairo.ts"
   },
   "dependencies": {
     "@sigma/deno-compat": "npm:@jsr/sigma__deno-compat@0.10.0"

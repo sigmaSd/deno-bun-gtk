@@ -8,7 +8,9 @@ const SEARCH_DIRS = [
 ];
 
 export const unixLibPaths: LibPaths = {
-  gtk: findLib("libgtk-4.so.1", SEARCH_DIRS),
+  gtk4: findLib("libgtk-4.so.1", SEARCH_DIRS),
+  gtk3: findLib("libgtk-3.so.0", SEARCH_DIRS),
+  app_indicator: findLib("libayatana-appindicator3.so.1", SEARCH_DIRS),
   adwaita: findLib("libadwaita-1.so.0", SEARCH_DIRS),
   glib: findLib("libglib-2.0.so.0", SEARCH_DIRS),
   gobject: findLib("libgobject-2.0.so.0", SEARCH_DIRS),

@@ -6,7 +6,7 @@ import {
   CheckButton,
   Label,
   Orientation,
-} from "@sigmasd/gtk";
+} from "@sigmasd/gtk/gtk4";
 
 const app = new Application(
   "com.example.CheckButtonDemo",

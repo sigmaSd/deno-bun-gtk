@@ -1,13 +1,29 @@
-import { gobject } from "./libs.ts";
-import { createGValue, cstr, readCStr } from "./utils.ts";
-import {
-  G_TYPE_BOOLEAN,
-  G_TYPE_DOUBLE,
-  G_TYPE_INT,
-  G_TYPE_OBJECT,
-  G_TYPE_STRING,
-  G_TYPE_UINT,
-} from "./enums.ts";
+import { gobject } from "../low/gobject.ts";
+import { createGValue, cstr, readCStr } from "../low/utils.ts";
+
+// GType fundamental types
+export const G_TYPE_INVALID = 0 << 2;
+export const G_TYPE_NONE = 1 << 2;
+export const G_TYPE_INTERFACE = 2 << 2;
+export const G_TYPE_CHAR = 3 << 2;
+export const G_TYPE_UCHAR = 4 << 2;
+export const G_TYPE_BOOLEAN = 5 << 2;
+export const G_TYPE_INT = 6 << 2;
+export const G_TYPE_UINT = 7 << 2;
+export const G_TYPE_LONG = 8 << 2;
+export const G_TYPE_ULONG = 9 << 2;
+export const G_TYPE_INT64 = 10 << 2;
+export const G_TYPE_UINT64 = 11 << 2;
+export const G_TYPE_ENUM = 12 << 2;
+export const G_TYPE_FLAGS = 13 << 2;
+export const G_TYPE_FLOAT = 14 << 2;
+export const G_TYPE_DOUBLE = 15 << 2;
+export const G_TYPE_STRING = 16 << 2;
+export const G_TYPE_POINTER = 17 << 2;
+export const G_TYPE_BOXED = 18 << 2;
+export const G_TYPE_PARAM = 19 << 2;
+export const G_TYPE_OBJECT = 20 << 2;
+export const G_TYPE_VARIANT = 21 << 2;
 
 // Base class for GObject wrappers
 export class GObject {
@@ -98,7 +114,10 @@ export class GObject {
     } else if (typeof value === "object" && value !== null) {
       // Handle raw Deno.PointerValue for object properties
       gobject.symbols.g_value_init(gvaluePtr, BigInt(G_TYPE_OBJECT));
-      gobject.symbols.g_value_set_object(gvaluePtr, value as Deno.PointerValue);
+      gobject.symbols.g_value_set_object(
+        gvaluePtr,
+        value as Deno.PointerValue,
+      );
     }
 
     gobject.symbols.g_object_set_property(

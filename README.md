@@ -23,25 +23,31 @@ In Deno you can import directly
 
 For bun you need to install it first using `bunx jsr add @sigmasd/gtk`
 
-Import directly from JSR in your Deno/Bun project:
+Import from JSR in your Deno/Bun project:
 
 ```typescript
-import { Application, ApplicationWindow, Button, Label } from "@sigmasd/gtk"; // or directly in deno with jsr:@sigmasd/gtk
-```
+// GTK4 widgets and enums
+import {
+  Align,
+  Application,
+  ApplicationFlags,
+  ApplicationWindow,
+  Box,
+  Button,
+  Label,
+  Orientation,
+} from "@sigmasd/gtk/gtk4";
 
-### Modular Imports
+// Adwaita widgets and enums
+import {
+  AboutDialog,
+  AdwWindow,
+  ColorScheme,
+  HeaderBar,
+} from "@sigmasd/gtk/adw";
 
-You can also import specific components to reduce namespace clutter:
-
-```typescript
-// Import only GTK widgets
-import { Button, Label } from "@sigmasd/gtk/gtk";
-
-// Import Adwaita widgets
-import { AdwWindow, HeaderBar } from "@sigmasd/gtk/adw";
-
-// Import Enums
-import { Orientation } from "@sigmasd/gtk/enums";
+// Event loop for async/await support
+import { EventLoop } from "@sigmasd/gtk/eventloop";
 ```
 
 ## Quick Start
@@ -57,7 +63,7 @@ import {
   Button,
   Label,
   Orientation,
-} from "@sigmasd/gtk";
+} from "@sigmasd/gtk/gtk4";
 
 const app = new Application("com.example.HelloWorld", ApplicationFlags.NONE);
 
@@ -172,21 +178,26 @@ deno run --allow-ffi --allow-net examples/async-demo.ts
 ## Usage
 
 ```typescript
-// Import main widgets
+// Import GTK4 widgets and enums
 import {
+  Align,
   Application,
+  ApplicationFlags,
   ApplicationWindow,
   Box,
   Button,
   Entry,
   Label,
-} from "@sigmasd/gtk";
+  Orientation,
+} from "@sigmasd/gtk/gtk4";
 
-// Import constants
-import { Align, ApplicationFlags, Orientation } from "@sigmasd/gtk";
-
-// Import Adwaita widgets
-import { HeaderBar, PreferencesWindow, StyleManager } from "@sigmasd/gtk";
+// Import Adwaita widgets and enums
+import {
+  ColorScheme,
+  HeaderBar,
+  PreferencesWindow,
+  StyleManager,
+} from "@sigmasd/gtk/adw";
 
 // Import event loop utilities (optional)
 import { EventLoop } from "@sigmasd/gtk/eventloop";
@@ -206,7 +217,7 @@ import {
   ApplicationFlags,
   ApplicationWindow,
   Button,
-} from "@sigmasd/gtk";
+} from "@sigmasd/gtk/gtk4";
 import { EventLoop } from "@sigmasd/gtk/eventloop";
 
 const app = new Application("com.example.App", ApplicationFlags.NONE);
@@ -333,16 +344,16 @@ Deno.exit(exitCode);
 
 ## Architecture
 
-### Low-Level FFI (`src/gtk-ffi.ts`)
+### Low-Level FFI (`src/low/`)
 
-The core module handles:
+The FFI layer (`src/low/*.ts`) handles:
 
 - Dynamic library loading (`dlopen`)
 - FFI symbol definitions
 - Raw GTK/GLib C function bindings
-- Memory management (GObject reference counting)
+- Platform-specific library path resolution (`src/low/paths/`)
 
-### High-Level Wrappers
+### High-Level Wrappers (`src/high/`)
 
 Object-oriented classes that:
 
@@ -351,6 +362,7 @@ Object-oriented classes that:
 - Handle C string conversions
 - Manage GValue conversions for properties
 - Register and manage signal callbacks
+- Memory management (GObject reference counting)
 
 ## Development
 
@@ -359,12 +371,37 @@ Object-oriented classes that:
 ```
 gtk/
 ├── src/
-|   |-- bun-deno-compat.ts # Deno compatibility layer for Bun
-│   ├── gtk-ffi.ts         # Main FFI bindings and wrappers
-│   └── eventloop.ts       # Event loop for async/await support
+│   ├── high/              # High-level wrappers (Public API)
+│   │   ├── gtk4.ts        # GTK4 wrapper classes
+│   │   ├── gtk3.ts        # GTK3 wrapper classes
+│   │   ├── adw.ts         # Libadwaita wrappers
+│   │   ├── gio.ts         # GIO wrappers (Menu, SimpleAction)
+│   │   ├── glib.ts        # GLib wrappers (MainLoop)
+│   │   ├── gobject.ts     # GObject base class
+│   │   ├── cairo.ts       # Cairo graphics wrapper
+│   │   ├── eventloop.ts   # Event loop for async/await
+│   │   └── app_indicator.ts # App indicator wrapper
+│   ├── low/               # Low-level FFI layer (Internal)
+│   │   ├── gtk4.ts        # GTK4 FFI bindings
+│   │   ├── gtk3.ts        # GTK3 FFI bindings
+│   │   ├── adw.ts         # Libadwaita FFI bindings
+│   │   ├── gio.ts         # GIO FFI bindings
+│   │   ├── glib.ts        # GLib FFI bindings
+│   │   ├── gobject.ts     # GObject FFI bindings
+│   │   ├── cairo.ts       # Cairo FFI bindings
+│   │   ├── app_indicator.ts # App indicator FFI
+│   │   ├── utils.ts       # Utility functions (cstr, readCStr)
+│   │   └── paths/         # Platform-specific library loading
+│   │       ├── mod.ts     # Main export
+│   │       ├── findLib.ts # Library search utility
+│   │       ├── types.ts   # Type definitions
+│   │       └── platform/  # Linux, macOS, Windows paths
 ├── examples/
 │   ├── simple.ts          # Simple hello world
-│   └── widgets-demo.ts    # Comprehensive widget demo
+│   ├── widgets-demo.ts    # Comprehensive widget demo
+│   ├── async-demo.ts      # Async/await demo
+│   └── checkbutton-demo.ts # Checkbox demo
+├── test/                  # Headless widget tests
 ├── deno.json              # Package configuration
 └── README.md
 ```
@@ -386,31 +423,38 @@ The `eventloop.ts` module provides:
 
 ### Adding New Widgets
 
-1. Add FFI symbol definitions to the appropriate `dlopen` call
-2. Create a high-level wrapper class extending `Widget` or `GObject`
+1. Add FFI symbol definitions in `src/low/gtk4.ts` (or appropriate low-level
+   module)
+2. Create a high-level wrapper class in `src/high/gtk4.ts` extending `Widget` or
+   `GObject`
 3. Implement constructor and common methods
 4. Export the class
 
 Example:
 
-```typescript
-// 1. Add FFI binding
-const gtk = Deno.dlopen(LINUX_LIB_PATHS.gtk, {
+```gtk/src/low/gtk4.ts
+// 1. Add FFI binding in src/low/gtk4.ts
+export const gtk4 = Deno.dlopen(LIB_PATHS.gtk4, {
   // ... existing symbols ...
   gtk_my_widget_new: { parameters: [], result: "pointer" },
   gtk_my_widget_set_text: { parameters: ["pointer", "buffer"], result: "void" },
 });
+```
 
-// 2. Create wrapper class
+```gtk/src/high/gtk4.ts
+// 2. Create wrapper class in src/high/gtk4.ts
+import { gtk4 } from "../low/gtk4.ts";
+import { cstr } from "../low/utils.ts";
+
 export class MyWidget extends Widget {
   constructor() {
-    const ptr = gtk.symbols.gtk_my_widget_new();
+    const ptr = gtk4.symbols.gtk_my_widget_new();
     super(ptr);
   }
 
   setText(text: string): void {
     const textCStr = cstr(text);
-    gtk.symbols.gtk_my_widget_set_text(this.ptr, textCStr);
+    gtk4.symbols.gtk_my_widget_set_text(this.ptr, textCStr);
   }
 }
 ```

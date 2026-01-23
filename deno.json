@@ -2,16 +2,13 @@
   "name": "@sigmasd/gtk",
   "version": "0.21.0",
   "exports": {
-    ".": "./src/gtk-ffi.ts",
-    "./eventloop": "./src/eventloop.ts",
-    "./gtk": "./src/gtk.ts",
-    "./adw": "./src/adw.ts",
-    "./gio": "./src/gio.ts",
-    "./glib": "./src/glib.ts",
-    "./gobject": "./src/gobject.ts",
-    "./cairo": "./src/cairo.ts",
-    "./utils": "./src/utils.ts",
-    "./enums": "./src/enums.ts"
+    "./eventloop": "./src/high/eventloop.ts",
+    "./gtk4": "./src/high/gtk4.ts",
+    "./adw": "./src/high/adw.ts",
+    "./gio": "./src/high/gio.ts",
+    "./glib": "./src/high/glib.ts",
+    "./gobject": "./src/high/gobject.ts",
+    "./cairo": "./src/high/cairo.ts"
   },
   "license": "MIT",
   "publish": {

@@ -10,9 +10,9 @@ import {
   Button,
   CheckButton,
   Entry,
-  GTK_ORIENTATION_VERTICAL,
   Label,
-} from "../src/gtk-ffi.ts";
+  Orientation,
+} from "../src/high/gtk4.ts";
 
 function assert(condition: boolean, message: string) {
   if (!condition) {
@@ -154,7 +154,7 @@ Deno.test("Entry and Button Interaction", testOptions, () => {
 });
 
 Deno.test("Container Widget Hierarchy", testOptions, () => {
-  const box = new Box(GTK_ORIENTATION_VERTICAL, 10);
+  const box = new Box(Orientation.VERTICAL, 10);
 
   const child1 = new Label("Child 1");
 

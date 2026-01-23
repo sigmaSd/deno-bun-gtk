@@ -8,8 +8,9 @@ import {
   Button,
   Label,
   Orientation,
-} from "@sigmasd/gtk";
-import { EventLoop } from "../src/eventloop.ts";
+} from "@sigmasd/gtk/gtk4";
+
+import { EventLoop } from "@sigmasd/gtk/eventloop";
 
 const APP_ID = "com.example.AsyncDemo";
 const APP_FLAGS = ApplicationFlags.NONE;

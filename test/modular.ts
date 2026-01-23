@@ -5,10 +5,9 @@
  * instead of the main entry point.
  */
 
-import { Button, Label } from "../src/gtk.ts";
-import { AdwWindow } from "../src/adw.ts";
-import { Orientation } from "../src/enums.ts";
-import { cstr } from "../src/utils.ts";
+import { cstr } from "../src/low/utils.ts";
+import { Button, Label, Orientation } from "../src/high/gtk4.ts";
+import { AdwWindow } from "../src/high/adw.ts";
 
 function assert(condition: boolean, message: string) {
   if (!condition) {
@@ -22,14 +21,14 @@ Deno.test("Utils module: cstr returns Uint8Array", () => {
   assert(buffer instanceof Uint8Array, "buffer is Uint8Array");
 });
 
-Deno.test("Enums module: Constants are correct", () => {
+Deno.test("Enums: Constants are correct", () => {
   assert(
     Orientation.VERTICAL === 1,
-    "Orientation.VERTICAL from enums.ts is correct",
+    "Orientation.VERTICAL from gtk4.ts is correct",
   );
   assert(
     Orientation.HORIZONTAL === 0,
-    "Orientation.HORIZONTAL from enums.ts is correct",
+    "Orientation.HORIZONTAL from gtk4.ts is correct",
   );
 });
 

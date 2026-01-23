@@ -8,7 +8,7 @@ import {
   Button,
   Label,
   Orientation,
-} from "@sigmasd/gtk";
+} from "@sigmasd/gtk/gtk4";
 
 const APP_ID = "com.example.SimpleDemo";
 const APP_FLAGS = ApplicationFlags.NONE;
