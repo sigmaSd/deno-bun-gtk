@@ -1,5 +1,5 @@
 import "@sigma/deno-compat";
-import { LIB_PATHS } from "../libPaths/mod.ts";
+import { LIB_PATHS } from "./paths/mod.ts";
 
 export const app_indicator = Deno.dlopen(LIB_PATHS.app_indicator, {
   app_indicator_new: {

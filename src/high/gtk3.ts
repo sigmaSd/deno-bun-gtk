@@ -1,5 +1,5 @@
-import { gtk3 } from "./ffi/gtk3.ts";
-import { cstr } from "./utils.ts";
+import { gtk3 } from "../low/gtk3.ts";
+import { cstr } from "../low/utils.ts";
 import { GObject } from "./gobject.ts";
 
 export class Widget extends GObject {

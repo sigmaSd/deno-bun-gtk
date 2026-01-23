@@ -1,6 +1,6 @@
 // GLib 2.0 - Core utilities and main loop
 import "@sigma/deno-compat";
-import { LIB_PATHS } from "../libPaths/mod.ts";
+import { LIB_PATHS } from "./paths/mod.ts";
 
 export const glib2 = Deno.dlopen(LIB_PATHS.glib, {
   g_main_loop_new: { parameters: ["pointer", "bool"], result: "pointer" },

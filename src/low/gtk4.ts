@@ -1,6 +1,6 @@
 // GTK4 - Widget toolkit FFI bindings
 import "@sigma/deno-compat";
-import { LIB_PATHS } from "../libPaths/mod.ts";
+import { LIB_PATHS } from "./paths/mod.ts";
 
 export const gtk4 = Deno.dlopen(LIB_PATHS.gtk4, {
   gtk_init: { parameters: [], result: "void" },

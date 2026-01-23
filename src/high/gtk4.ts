@@ -1,13 +1,13 @@
 // deno-lint-ignore-file no-explicit-any
-import { cstr, readCStr } from "./utils.ts";
+import { cstr, readCStr } from "../low/utils.ts";
 import { GObject } from "./gobject.ts";
 import type { Menu, SimpleAction } from "./gio.ts";
 import { CairoContext } from "./cairo.ts";
-import { gtk4 } from "./ffi/gtk4.ts";
-import { adwaita } from "./ffi/adwaita.ts";
-import { gio2 } from "./ffi/gio2.ts";
-import { gobject2 } from "./ffi/gobject2.ts";
-import { glib2 } from "./ffi/glib2.ts";
+import { gtk4 } from "../low/gtk4.ts";
+import { adwaita } from "../low/adw.ts";
+import { gio2 } from "../low/gio.ts";
+import { gobject2 } from "../low/gobject.ts";
+import { glib2 } from "../low/glib.ts";
 
 // ============================================================================
 // GTK Enums and Constants

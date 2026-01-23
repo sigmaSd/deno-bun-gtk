@@ -1,5 +1,5 @@
-import { gobject2 } from "./ffi/gobject2.ts";
-import { createGValue, cstr, readCStr } from "./utils.ts";
+import { gobject2 } from "../low/gobject.ts";
+import { createGValue, cstr, readCStr } from "../low/utils.ts";
 
 // GType fundamental types
 export const G_TYPE_INVALID = 0 << 2;

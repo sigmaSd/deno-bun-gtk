@@ -1,4 +1,4 @@
-import { glib2 } from "./ffi/glib2.ts";
+import { glib2 } from "../low/glib.ts";
 
 // ============================================================================
 // GLib Enums and Constants

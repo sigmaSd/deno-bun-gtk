@@ -1,5 +1,5 @@
-import { app_indicator } from "./ffi/app_indicator.ts";
-import { cstr } from "./utils.ts";
+import { app_indicator } from "../low/app_indicator.ts";
+import { cstr } from "../low/utils.ts";
 import { G_TYPE_BOOLEAN, GObject } from "./gobject.ts";
 import type { Menu } from "./gtk3.ts";
 

@@ -12,7 +12,7 @@ import {
   Entry,
   Label,
   Orientation,
-} from "../src/gtk4.ts";
+} from "../src/high/gtk4.ts";
 
 function assert(condition: boolean, message: string) {
   if (!condition) {

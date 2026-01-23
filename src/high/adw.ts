@@ -1,7 +1,7 @@
-import { adwaita } from "./ffi/adwaita.ts";
-import { cstr, readCStr } from "./utils.ts";
+import { adwaita } from "../low/adw.ts";
+import { cstr, readCStr } from "../low/utils.ts";
 import { type Application, ListBoxRow, Widget, Window } from "./gtk4.ts";
-import { gobject2 } from "./ffi/gobject2.ts";
+import { gobject2 } from "../low/gobject.ts";
 
 // ============================================================================
 // Adwaita Enums and Constants

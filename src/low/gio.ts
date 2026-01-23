@@ -1,6 +1,6 @@
 // GIO 2.0 - Application support and I/O
 import "@sigma/deno-compat";
-import { LIB_PATHS } from "../libPaths/mod.ts";
+import { LIB_PATHS } from "./paths/mod.ts";
 
 export const gio2 = Deno.dlopen(LIB_PATHS.gio, {
   g_application_run: {

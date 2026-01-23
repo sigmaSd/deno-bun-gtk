@@ -1,6 +1,6 @@
-import { gio2 } from "./ffi/gio2.ts";
-import { glib2 } from "./ffi/glib2.ts";
-import { cstr, readCStr } from "./utils.ts";
+import { gio2 } from "../low/gio.ts";
+import { glib2 } from "../low/glib.ts";
+import { cstr, readCStr } from "../low/utils.ts";
 import { GObject } from "./gobject.ts";
 
 // GMenu extends GMenuModel extends GObject

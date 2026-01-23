@@ -1,14 +1,13 @@
 {
   "name": "@sigmasd/gtk",
   "exports": {
-    "./eventloop": "./src/eventloop.ts",
-    "./gtk4": "./src/gtk4.ts",
-    "./adw": "./src/adw.ts",
-    "./gio": "./src/gio.ts",
-    "./glib": "./src/glib.ts",
-    "./gobject": "./src/gobject.ts",
-    "./cairo": "./src/cairo.ts",
-    "./utils": "./src/utils.ts"
+    "./eventloop": "./src/high/eventloop.ts",
+    "./gtk4": "./src/high/gtk4.ts",
+    "./adw": "./src/high/adw.ts",
+    "./gio": "./src/high/gio.ts",
+    "./glib": "./src/high/glib.ts",
+    "./gobject": "./src/high/gobject.ts",
+    "./cairo": "./src/high/cairo.ts"
   },
   "dependencies": {
     "@sigma/deno-compat": "npm:@jsr/sigma__deno-compat@0.10.0"

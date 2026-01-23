@@ -5,9 +5,9 @@
  * instead of the main entry point.
  */
 
-import { cstr } from "../src/utils.ts";
-import { Button, Label, Orientation } from "../src/gtk4.ts";
-import { AdwWindow } from "../src/adw.ts";
+import { cstr } from "../src/low/utils.ts";
+import { Button, Label, Orientation } from "../src/high/gtk4.ts";
+import { AdwWindow } from "../src/high/adw.ts";
 
 function assert(condition: boolean, message: string) {
   if (!condition) {

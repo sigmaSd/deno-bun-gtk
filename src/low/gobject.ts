@@ -1,6 +1,6 @@
 // GObject 2.0 - Object system and type system
 import "@sigma/deno-compat";
-import { LIB_PATHS } from "../libPaths/mod.ts";
+import { LIB_PATHS } from "./paths/mod.ts";
 
 export const gobject2 = Deno.dlopen(LIB_PATHS.gobject, {
   g_object_new: {

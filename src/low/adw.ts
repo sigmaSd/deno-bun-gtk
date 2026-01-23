@@ -1,6 +1,6 @@
 // Adwaita 1 - GNOME-style widgets FFI bindings
 import "@sigma/deno-compat";
-import { LIB_PATHS } from "../libPaths/mod.ts";
+import { LIB_PATHS } from "./paths/mod.ts";
 
 export const adwaita = Deno.dlopen(LIB_PATHS.adwaita, {
   adw_init: { parameters: [], result: "void" },

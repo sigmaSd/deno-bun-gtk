@@ -31,7 +31,7 @@
  */
 
 import type { Application } from "./gtk4.ts";
-import { glib2 } from "./ffi/glib2.ts";
+import { glib2 } from "../low/glib.ts";
 
 export interface EventLoopOptions {
   /**

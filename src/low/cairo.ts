@@ -1,6 +1,6 @@
 // Cairo 2 - 2D Graphics Library FFI bindings
 import "@sigma/deno-compat";
-import { LIB_PATHS } from "../libPaths/mod.ts";
+import { LIB_PATHS } from "./paths/mod.ts";
 
 export const cairo2 = Deno.dlopen(LIB_PATHS.cairo, {
   cairo_set_source_rgb: {
