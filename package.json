@@ -8,8 +8,7 @@
     "./glib": "./src/glib.ts",
     "./gobject": "./src/gobject.ts",
     "./cairo": "./src/cairo.ts",
-    "./utils": "./src/utils.ts",
-    "./enums": "./src/enums.ts"
+    "./utils": "./src/utils.ts"
   },
   "dependencies": {
     "@sigma/deno-compat": "npm:@jsr/sigma__deno-compat@0.10.0"

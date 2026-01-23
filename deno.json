@@ -9,8 +9,7 @@
     "./glib": "./src/glib.ts",
     "./gobject": "./src/gobject.ts",
     "./cairo": "./src/cairo.ts",
-    "./utils": "./src/utils.ts",
-    "./enums": "./src/enums.ts"
+    "./utils": "./src/utils.ts"
   },
   "license": "MIT",
   "publish": {

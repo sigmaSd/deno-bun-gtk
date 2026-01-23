@@ -7,7 +7,7 @@
  * when running `deno test` on multiple files) causes crashes on Windows
  * due to double initialization of the library.
  *
- * By importing them here, we ensure `libs.ts` is evaluated only once,
+ * By importing them here, we ensure FFI modules are evaluated only once,
  * and GTK is initialized exactly once.
  */
 import "./modular.ts";

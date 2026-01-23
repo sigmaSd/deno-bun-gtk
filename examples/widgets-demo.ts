@@ -2,6 +2,7 @@
 
 import {
   Application,
+  ApplicationFlags,
   ApplicationWindow,
   Box,
   Button,
@@ -11,15 +12,12 @@ import {
   Label,
   ListBox,
   ListBoxRow,
+  Orientation,
   ScrolledWindow,
+  SelectionMode,
   StringList,
   type Widget,
 } from "@sigmasd/gtk/gtk4";
-import {
-  ApplicationFlags,
-  Orientation,
-  SelectionMode,
-} from "@sigmasd/gtk/enums";
 import { HeaderBar, ToolbarView } from "@sigmasd/gtk/adw";
 
 const APP_ID = "com.example.WidgetsDemo";

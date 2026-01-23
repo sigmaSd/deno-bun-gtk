@@ -3,6 +3,30 @@ import { cstr, readCStr } from "./utils.ts";
 import { type Application, ListBoxRow, Widget, Window } from "./gtk4.ts";
 import { gobject2 } from "./ffi/gobject2.ts";
 
+// ============================================================================
+// Adwaita Enums and Constants
+// ============================================================================
+
+// Adwaita color scheme enum (for StyleManager)
+export const ColorScheme = {
+  DEFAULT: 0,
+  FORCE_LIGHT: 1,
+  FORCE_DARK: 4,
+  PREFER_DARK: 2,
+  PREFER_LIGHT: 3,
+} as const;
+
+// Adwaita response appearance (for MessageDialog)
+export const ResponseAppearance = {
+  DEFAULT: 0,
+  SUGGESTED: 1,
+  DESTRUCTIVE: 2,
+} as const;
+
+// ============================================================================
+// Adwaita Widgets
+// ============================================================================
+
 // Libadwaita Window extends GtkWindow
 export class AdwWindow extends Window {
   constructor(ptr?: Deno.PointerValue) {

@@ -12,7 +12,7 @@
  *
  * @example
  * ```typescript
- * import { Application } from "@sigmasd/gtk";
+ * import { Application } from "@sigmasd/gtk/gtk4";
  * import { EventLoop } from "@sigmasd/gtk/eventloop";
  *
  * const app = new Application("com.example.App", 0);

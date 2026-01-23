@@ -23,25 +23,31 @@ In Deno you can import directly
 
 For bun you need to install it first using `bunx jsr add @sigmasd/gtk`
 
-Import directly from JSR in your Deno/Bun project:
+Import from JSR in your Deno/Bun project:
 
 ```typescript
-import { Application, ApplicationWindow, Button, Label } from "@sigmasd/gtk"; // or directly in deno with jsr:@sigmasd/gtk
-```
+// GTK4 widgets and enums
+import {
+  Align,
+  Application,
+  ApplicationFlags,
+  ApplicationWindow,
+  Box,
+  Button,
+  Label,
+  Orientation,
+} from "@sigmasd/gtk/gtk4";
 
-### Modular Imports
+// Adwaita widgets and enums
+import {
+  AboutDialog,
+  AdwWindow,
+  ColorScheme,
+  HeaderBar,
+} from "@sigmasd/gtk/adw";
 
-You can also import specific components to reduce namespace clutter:
-
-```typescript
-// Import only GTK widgets
-import { Button, Label } from "@sigmasd/gtk/gtk";
-
-// Import Adwaita widgets
-import { AdwWindow, HeaderBar } from "@sigmasd/gtk/adw";
-
-// Import Enums
-import { Orientation } from "@sigmasd/gtk/enums";
+// Event loop for async/await support
+import { EventLoop } from "@sigmasd/gtk/eventloop";
 ```
 
 ## Quick Start
@@ -57,7 +63,7 @@ import {
   Button,
   Label,
   Orientation,
-} from "@sigmasd/gtk";
+} from "@sigmasd/gtk/gtk4";
 
 const app = new Application("com.example.HelloWorld", ApplicationFlags.NONE);
 
@@ -172,21 +178,26 @@ deno run --allow-ffi --allow-net examples/async-demo.ts
 ## Usage
 
 ```typescript
-// Import main widgets
+// Import GTK4 widgets and enums
 import {
+  Align,
   Application,
+  ApplicationFlags,
   ApplicationWindow,
   Box,
   Button,
   Entry,
   Label,
-} from "@sigmasd/gtk";
+  Orientation,
+} from "@sigmasd/gtk/gtk4";
 
-// Import constants
-import { Align, ApplicationFlags, Orientation } from "@sigmasd/gtk";
-
-// Import Adwaita widgets
-import { HeaderBar, PreferencesWindow, StyleManager } from "@sigmasd/gtk";
+// Import Adwaita widgets and enums
+import {
+  ColorScheme,
+  HeaderBar,
+  PreferencesWindow,
+  StyleManager,
+} from "@sigmasd/gtk/adw";
 
 // Import event loop utilities (optional)
 import { EventLoop } from "@sigmasd/gtk/eventloop";
@@ -206,7 +217,7 @@ import {
   ApplicationFlags,
   ApplicationWindow,
   Button,
-} from "@sigmasd/gtk";
+} from "@sigmasd/gtk/gtk4";
 import { EventLoop } from "@sigmasd/gtk/eventloop";
 
 const app = new Application("com.example.App", ApplicationFlags.NONE);
@@ -333,16 +344,15 @@ Deno.exit(exitCode);
 
 ## Architecture
 
-### Low-Level FFI (`src/gtk-ffi.ts`)
+### Low-Level FFI (`src/ffi/`)
 
-The core module handles:
+The FFI layer (`src/ffi/*.ts`) handles:
 
 - Dynamic library loading (`dlopen`)
 - FFI symbol definitions
 - Raw GTK/GLib C function bindings
-- Memory management (GObject reference counting)
 
-### High-Level Wrappers
+### High-Level Wrappers (`src/*.ts`)
 
 Object-oriented classes that:
 
@@ -351,6 +361,7 @@ Object-oriented classes that:
 - Handle C string conversions
 - Manage GValue conversions for properties
 - Register and manage signal callbacks
+- Memory management (GObject reference counting)
 
 ## Development
 
@@ -359,12 +370,30 @@ Object-oriented classes that:
 ```
 gtk/
 ├── src/
-|   |-- bun-deno-compat.ts # Deno compatibility layer for Bun
-│   ├── gtk-ffi.ts         # Main FFI bindings and wrappers
-│   └── eventloop.ts       # Event loop for async/await support
+│   ├── ffi/               # Low-level FFI symbol definitions
+│   │   ├── gtk4.ts        # GTK4 FFI bindings
+│   │   ├── adwaita.ts     # Libadwaita FFI bindings
+│   │   ├── gio2.ts        # GIO FFI bindings
+│   │   ├── glib2.ts       # GLib FFI bindings
+│   │   ├── gobject2.ts    # GObject FFI bindings
+│   │   └── cairo2.ts      # Cairo FFI bindings
+│   ├── libPaths/          # Platform-specific library loading
+│   │   ├── mod.ts         # Main export
+│   │   └── platform/      # Linux, macOS, Windows paths
+│   ├── gtk4.ts            # GTK4 high-level wrappers
+│   ├── adw.ts             # Libadwaita wrappers
+│   ├── gio.ts             # GIO wrappers (Menu, SimpleAction)
+│   ├── glib.ts            # GLib wrappers (MainLoop)
+│   ├── gobject.ts         # GObject base class
+│   ├── cairo.ts           # Cairo graphics wrapper
+│   ├── eventloop.ts       # Event loop for async/await
+│   └── utils.ts           # Utility functions
 ├── examples/
 │   ├── simple.ts          # Simple hello world
-│   └── widgets-demo.ts    # Comprehensive widget demo
+│   ├── widgets-demo.ts    # Comprehensive widget demo
+│   ├── async-demo.ts      # Async/await demo
+│   └── checkbutton-demo.ts # Checkbox demo
+├── test/                  # Headless widget tests
 ├── deno.json              # Package configuration
 └── README.md
 ```

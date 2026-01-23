@@ -1,5 +1,28 @@
 import { glib2 } from "./ffi/glib2.ts";
 
+// ============================================================================
+// GLib Enums and Constants
+// ============================================================================
+
+// GLib Priority levels (for timeouts, idle handlers, etc.)
+export const Priority = {
+  HIGH: -100,
+  DEFAULT: 0,
+  HIGH_IDLE: 100,
+  DEFAULT_IDLE: 200,
+  LOW: 300,
+} as const;
+
+// Unix signal numbers
+export const UnixSignal = {
+  SIGINT: 2,
+  SIGTERM: 15,
+} as const;
+
+// ============================================================================
+// GLib Classes
+// ============================================================================
+
 // GLib MainLoop
 export class MainLoop {
   private ptr: Deno.PointerValue;

@@ -9,6 +9,112 @@ import { gio2 } from "./ffi/gio2.ts";
 import { gobject2 } from "./ffi/gobject2.ts";
 import { glib2 } from "./ffi/glib2.ts";
 
+// ============================================================================
+// GTK Enums and Constants
+// ============================================================================
+
+// GTK Orientation enum
+export const Orientation = {
+  HORIZONTAL: 0,
+  VERTICAL: 1,
+} as const;
+
+// GTK Align enum
+export const Align = {
+  FILL: 0,
+  START: 1,
+  END: 2,
+  CENTER: 3,
+  BASELINE: 4,
+} as const;
+
+// GTK SelectionMode enum
+export const SelectionMode = {
+  NONE: 0,
+  SINGLE: 1,
+  BROWSE: 2,
+  MULTIPLE: 3,
+} as const;
+
+// GApplicationFlags (used by Application)
+export const ApplicationFlags = {
+  NONE: 0,
+  IS_SERVICE: 1 << 0,
+  IS_LAUNCHER: 1 << 1,
+  HANDLES_OPEN: 1 << 2,
+  HANDLES_COMMAND_LINE: 1 << 3,
+  SEND_ENVIRONMENT: 1 << 4,
+  NON_UNIQUE: 1 << 5,
+  CAN_OVERRIDE_APP_ID: 1 << 6,
+  ALLOW_REPLACEMENT: 1 << 7,
+  REPLACE: 1 << 8,
+} as const;
+
+// GTK License types (for AboutDialog)
+export const License = {
+  UNKNOWN: 0,
+  CUSTOM: 1,
+  GPL_2_0: 2,
+  GPL_3_0: 3,
+  LGPL_2_1: 4,
+  LGPL_3_0: 5,
+  BSD: 6,
+  MIT_X11: 7,
+  ARTISTIC: 8,
+  GPL_2_0_ONLY: 9,
+  GPL_3_0_ONLY: 10,
+  LGPL_2_1_ONLY: 11,
+  LGPL_3_0_ONLY: 12,
+  AGPL_3_0: 13,
+  AGPL_3_0_ONLY: 14,
+  BSD_3: 15,
+  APACHE_2_0: 16,
+  MPL_2_0: 17,
+} as const;
+
+// GTK Style Provider Priority
+export const StyleProviderPriority = {
+  FALLBACK: 1,
+  THEME: 200,
+  SETTINGS: 400,
+  APPLICATION: 600,
+  USER: 800,
+} as const;
+
+// GTK Application Inhibit flags
+export const ApplicationInhibitFlags = {
+  LOGOUT: 1,
+  SWITCH: 2,
+  SUSPEND: 4,
+  IDLE: 8,
+} as const;
+
+// Drag action flags
+export const DragAction = {
+  COPY: 1,
+  MOVE: 2,
+  LINK: 4,
+  ASK: 8,
+} as const;
+
+// Modifier type flags (for keyboard shortcuts)
+export const ModifierType = {
+  SHIFT_MASK: 1,
+  LOCK_MASK: 2,
+  CONTROL_MASK: 4,
+  ALT_MASK: 8,
+} as const;
+
+// Common key values
+export const Key = {
+  v: 118,
+  o: 111,
+  t: 116,
+  r: 114,
+  q: 113,
+  w: 119,
+} as const;
+
 // GTK Widget wrapper
 export class Widget extends GObject {
   setMarginTop(margin: number): void {
