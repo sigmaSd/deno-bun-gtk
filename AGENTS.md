@@ -34,36 +34,38 @@
 
 ### High-Level Wrappers (Public API)
 
-- `src/gtk4.ts` - GTK4 wrapper classes (GObject, Widget, Application, Window,
-  Button, Label, Box, Entry, ListBox, etc.)
-- `src/gtk3.ts` - GTK3 wrapper classes (for legacy/app indicator support)
-- `src/adw.ts` - Libadwaita wrappers (AdwWindow, HeaderBar, AboutDialog,
+- `src/high/gtk4.ts` - GTK4 wrapper classes (GObject, Widget, Application,
+  Window, Button, Label, Box, Entry, ListBox, etc.)
+- `src/high/gtk3.ts` - GTK3 wrapper classes (for legacy/app indicator support)
+- `src/high/adw.ts` - Libadwaita wrappers (AdwWindow, HeaderBar, AboutDialog,
   PreferencesWindow, ActionRow, MessageDialog, StyleManager, etc.)
-- `src/gio.ts` - GIO wrappers (Menu, SimpleAction, etc.)
-- `src/glib.ts` - GLib wrappers (MainLoop, etc.)
-- `src/gobject.ts` - GObject base class with signal handling
-- `src/cairo.ts` - Cairo graphics context wrapper
-- `src/eventloop.ts` - Event loop for async/await integration
-- `src/utils.ts` - Utility functions (cstr, readCStr)
+- `src/high/gio.ts` - GIO wrappers (Menu, SimpleAction, etc.)
+- `src/high/glib.ts` - GLib wrappers (MainLoop, etc.)
+- `src/high/gobject.ts` - GObject base class with signal handling
+- `src/high/cairo.ts` - Cairo graphics context wrapper
+- `src/high/eventloop.ts` - Event loop for async/await integration
+- `src/high/app_indicator.ts` - App indicator wrapper (Linux system tray)
 
-### FFI Layer (Internal)
+### Low-Level FFI Layer (Internal)
 
-- `src/ffi/gtk4.ts` - GTK4 FFI symbol definitions
-- `src/ffi/gtk3.ts` - GTK3 FFI symbol definitions
-- `src/ffi/adwaita.ts` - Libadwaita FFI symbol definitions
-- `src/ffi/gio2.ts` - GIO FFI symbol definitions
-- `src/ffi/glib2.ts` - GLib FFI symbol definitions
-- `src/ffi/gobject2.ts` - GObject FFI symbol definitions
-- `src/ffi/cairo2.ts` - Cairo FFI symbol definitions
-- `src/ffi/app_indicator.ts` - App indicator FFI (Linux system tray)
+- `src/low/gtk4.ts` - GTK4 FFI symbol definitions
+- `src/low/gtk3.ts` - GTK3 FFI symbol definitions
+- `src/low/adw.ts` - Libadwaita FFI symbol definitions
+- `src/low/gio.ts` - GIO FFI symbol definitions
+- `src/low/glib.ts` - GLib FFI symbol definitions
+- `src/low/gobject.ts` - GObject FFI symbol definitions
+- `src/low/cairo.ts` - Cairo FFI symbol definitions
+- `src/low/app_indicator.ts` - App indicator FFI (Linux system tray)
+- `src/low/utils.ts` - Utility functions (cstr, readCStr)
 
 ### Library Loading
 
-- `src/libPaths/mod.ts` - Platform detection and library path export
-- `src/libPaths/findLib.ts` - Library search utility
-- `src/libPaths/platform/unix.ts` - Linux library paths
-- `src/libPaths/platform/darwin.ts` - macOS library paths
-- `src/libPaths/platform/windows.ts` - Windows library paths
+- `src/low/paths/mod.ts` - Platform detection and library path export
+- `src/low/paths/findLib.ts` - Library search utility
+- `src/low/paths/types.ts` - Type definitions for library paths
+- `src/low/paths/platform/unix.ts` - Linux library paths
+- `src/low/paths/platform/darwin.ts` - macOS library paths
+- `src/low/paths/platform/windows.ts` - Windows library paths
 
 ### Examples
 
@@ -108,7 +110,7 @@ The library loading uses these soname versions:
 - **MessageDialog inheritance**: Fixed to extend `Window` (not `Widget`) since
   AdwMessageDialog extends GtkWindow.
 
-- **Adwaita auto-initialization**: The `adwaita.ts` FFI module calls
+- **Adwaita auto-initialization**: The `src/low/adw.ts` FFI module calls
   `adw_init()` automatically when loaded, with a guard against double
   initialization.
 
@@ -126,11 +128,11 @@ The library loading uses these soname versions:
 
 ## Integration Points
 
-- FFI symbols are defined in `src/ffi/*.ts` and accessed via `gtk4.symbols.*`,
-  `gobject2.symbols.*`, etc.
+- FFI symbols are defined in `src/low/*.ts` and accessed via `gtk4.symbols.*`,
+  `gobject.symbols.*`, etc.
 - All wrapper classes extend either `GObject` or one of its subclasses
   (`Widget`, `Window`, `Application`)
 - The `connect()` method is the foundation for all signal handling, with
   convenience methods built on top
 - Platform-specific library paths are resolved at module load time via
-  `src/libPaths/mod.ts`
+  `src/low/paths/mod.ts`
