@@ -4,11 +4,12 @@
     "./eventloop": "./src/eventloop.ts",
     "./gtk4": "./src/gtk4.ts",
     "./adw1": "./src/adw1.ts",
-    "./gio2": "./src/gio2.ts",
-    "./glib2": "./src/glib2.ts",
-    "./gobject2": "./src/gobject2.ts",
-    "./cairo1": "./src/cairo1.ts",
-    "./utils": "./src/utils.ts"
+    "./gio": "./src/gio.ts",
+    "./glib": "./src/glib.ts",
+    "./gobject": "./src/gobject.ts",
+    "./cairo": "./src/cairo.ts",
+    "./utils": "./src/utils.ts",
+    "./enums": "./src/enums.ts"
   },
   "dependencies": {
     "@sigma/deno-compat": "npm:@jsr/sigma__deno-compat@0.10.0"

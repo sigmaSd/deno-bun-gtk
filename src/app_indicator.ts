@@ -1,6 +1,7 @@
 import { app_indicator } from "./ffi/app_indicator.ts";
 import { cstr } from "./utils.ts";
-import { G_TYPE_BOOLEAN, GObject } from "./gobject2.ts";
+import { GObject } from "./gobject.ts";
+import { G_TYPE_BOOLEAN } from "./enums.ts";
 import type { Menu } from "./gtk3.ts";
 
 export enum IndicatorCategory {

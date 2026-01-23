@@ -19,7 +19,7 @@ import {
   ApplicationFlags,
   Orientation,
   SelectionMode,
-} from "@sigmasd/gtk/gtk4";
+} from "@sigmasd/gtk/enums";
 import { HeaderBar, ToolbarView } from "@sigmasd/gtk/adw1";
 
 const APP_ID = "com.example.WidgetsDemo";

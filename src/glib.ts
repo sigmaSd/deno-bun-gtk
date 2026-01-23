@@ -1,29 +1,5 @@
 import { glib } from "./ffi/gtk.ts";
 
-// GPriority constants
-export const G_PRIORITY_DEFAULT = 0;
-export const G_PRIORITY_HIGH = -100;
-export const G_PRIORITY_HIGH_IDLE = 100;
-export const G_PRIORITY_DEFAULT_IDLE = 200;
-export const G_PRIORITY_LOW = 300;
-
-export const Priority = {
-  DEFAULT: G_PRIORITY_DEFAULT,
-  HIGH: G_PRIORITY_HIGH,
-  HIGH_IDLE: G_PRIORITY_HIGH_IDLE,
-  DEFAULT_IDLE: G_PRIORITY_DEFAULT_IDLE,
-  LOW: G_PRIORITY_LOW,
-};
-
-// Unix Signals
-export const SIGINT = 2;
-export const SIGTERM = 15;
-
-export const UnixSignal = {
-  SIGINT: SIGINT,
-  SIGTERM: SIGTERM,
-};
-
 // GLib MainLoop
 export class MainLoop {
   private ptr: Deno.PointerValue;

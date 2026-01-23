@@ -1,29 +1,13 @@
 import { gobject } from "./ffi/gtk.ts";
 import { createGValue, cstr, readCStr } from "./utils.ts";
-
-// GType fundamental types
-export const G_TYPE_INVALID = 0 << 2;
-export const G_TYPE_NONE = 1 << 2;
-export const G_TYPE_INTERFACE = 2 << 2;
-export const G_TYPE_CHAR = 3 << 2;
-export const G_TYPE_UCHAR = 4 << 2;
-export const G_TYPE_BOOLEAN = 5 << 2;
-export const G_TYPE_INT = 6 << 2;
-export const G_TYPE_UINT = 7 << 2;
-export const G_TYPE_LONG = 8 << 2;
-export const G_TYPE_ULONG = 9 << 2;
-export const G_TYPE_INT64 = 10 << 2;
-export const G_TYPE_UINT64 = 11 << 2;
-export const G_TYPE_ENUM = 12 << 2;
-export const G_TYPE_FLAGS = 13 << 2;
-export const G_TYPE_FLOAT = 14 << 2;
-export const G_TYPE_DOUBLE = 15 << 2;
-export const G_TYPE_STRING = 16 << 2;
-export const G_TYPE_POINTER = 17 << 2;
-export const G_TYPE_BOXED = 18 << 2;
-export const G_TYPE_PARAM = 19 << 2;
-export const G_TYPE_OBJECT = 20 << 2;
-export const G_TYPE_VARIANT = 21 << 2;
+import {
+  G_TYPE_BOOLEAN,
+  G_TYPE_DOUBLE,
+  G_TYPE_INT,
+  G_TYPE_OBJECT,
+  G_TYPE_STRING,
+  G_TYPE_UINT,
+} from "./enums.ts";
 
 // Base class for GObject wrappers
 export class GObject {

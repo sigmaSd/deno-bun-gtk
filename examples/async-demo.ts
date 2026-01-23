@@ -7,7 +7,7 @@ import {
   Button,
   Label,
 } from "@sigmasd/gtk/gtk4";
-import { ApplicationFlags, Orientation } from "@sigmasd/gtk/gtk4";
+import { ApplicationFlags, Orientation } from "@sigmasd/gtk/enums";
 
 import { EventLoop } from "@sigmasd/gtk/eventloop";
 
