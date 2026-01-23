@@ -33,6 +33,19 @@ export const glib = Deno.dlopen(LIB_PATHS.glib, {
     result: "u32",
     optional: true,
   },
+  // GBytes
+  g_bytes_get_data: {
+    parameters: ["pointer", "pointer"],
+    result: "pointer",
+  },
+  g_bytes_get_size: {
+    parameters: ["pointer"],
+    result: "usize",
+  },
+  g_bytes_unref: {
+    parameters: ["pointer"],
+    result: "void",
+  },
   // GVariant
   g_variant_new_string: {
     parameters: ["buffer"],

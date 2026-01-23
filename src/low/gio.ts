@@ -145,19 +145,6 @@ export const gio = Deno.dlopen(LIB_PATHS.gio, {
     parameters: ["pointer", "pointer", "pointer"],
     result: "bool",
   },
-  // GBytes
-  g_bytes_get_data: {
-    parameters: ["pointer", "pointer"],
-    result: "pointer",
-  },
-  g_bytes_get_size: {
-    parameters: ["pointer"],
-    result: "usize",
-  },
-  g_bytes_unref: {
-    parameters: ["pointer"],
-    result: "void",
-  },
   // DBus (optional - not available on Windows)
   g_bus_get_sync: {
     parameters: ["i32", "pointer", "pointer"],

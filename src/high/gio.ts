@@ -250,20 +250,20 @@ export class InputStream extends GObject {
         }
 
         const sizePtr = new BigUint64Array(1);
-        const dataPtr = gio.symbols.g_bytes_get_data(
+        const dataPtr = glib.symbols.g_bytes_get_data(
           bytesPtr,
           Deno.UnsafePointer.of(sizePtr),
         );
 
         if (!dataPtr) {
-          gio.symbols.g_bytes_unref(bytesPtr);
+          glib.symbols.g_bytes_unref(bytesPtr);
           callback(null);
           return;
         }
 
         const size = Number(sizePtr[0]);
         if (size === 0) {
-          gio.symbols.g_bytes_unref(bytesPtr);
+          glib.symbols.g_bytes_unref(bytesPtr);
           callback(new Uint8Array(0));
           return;
         }
@@ -272,7 +272,7 @@ export class InputStream extends GObject {
         const data = new Uint8Array(size);
         view.copyInto(data);
 
-        gio.symbols.g_bytes_unref(bytesPtr);
+        glib.symbols.g_bytes_unref(bytesPtr);
         callback(data);
       },
     );
