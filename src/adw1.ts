@@ -2,6 +2,28 @@ import { adwaita, gobject } from "./ffi/gtk.ts";
 import { cstr, readCStr } from "./utils.ts";
 import { type Application, ListBoxRow, Widget, Window } from "./gtk4.ts";
 
+// Adwaita color scheme enum
+export const ADW_COLOR_SCHEME_DEFAULT = 0;
+export const ADW_COLOR_SCHEME_FORCE_LIGHT = 1;
+export const ADW_COLOR_SCHEME_FORCE_DARK = 2;
+
+export const ColorScheme = {
+  DEFAULT: ADW_COLOR_SCHEME_DEFAULT,
+  FORCE_LIGHT: ADW_COLOR_SCHEME_FORCE_LIGHT,
+  FORCE_DARK: ADW_COLOR_SCHEME_FORCE_DARK,
+};
+
+// Response appearance constants
+export const ADW_RESPONSE_DEFAULT = 0;
+export const ADW_RESPONSE_SUGGESTED = 1;
+export const ADW_RESPONSE_DESTRUCTIVE = 2;
+
+export const ResponseAppearance = {
+  DEFAULT: ADW_RESPONSE_DEFAULT,
+  SUGGESTED: ADW_RESPONSE_SUGGESTED,
+  DESTRUCTIVE: ADW_RESPONSE_DESTRUCTIVE,
+};
+
 // LibAdwaita Window extends GtkWindow
 export class AdwWindow extends Window {
   constructor(ptr?: Deno.PointerValue) {

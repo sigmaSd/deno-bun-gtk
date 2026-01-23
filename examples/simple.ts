@@ -2,12 +2,13 @@
 
 import {
   Application,
+  ApplicationFlags,
   ApplicationWindow,
   Box,
   Button,
   Label,
+  Orientation,
 } from "@sigmasd/gtk/gtk4";
-import { ApplicationFlags, Orientation } from "@sigmasd/gtk/enums";
 
 const APP_ID = "com.example.SimpleDemo";
 const APP_FLAGS = ApplicationFlags.NONE;

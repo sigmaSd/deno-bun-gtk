@@ -5,7 +5,7 @@ import {
   CheckButton,
   Label,
 } from "@sigmasd/gtk/gtk4";
-import { ApplicationFlags, Orientation } from "@sigmasd/gtk/enums";
+import { ApplicationFlags, Orientation } from "@sigmasd/gtk/gtk4";
 
 const app = new Application(
   "com.example.CheckButtonDemo",

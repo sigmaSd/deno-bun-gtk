@@ -5,8 +5,14 @@
  * We create widgets, simulate button clicks, and verify the UI updates correctly.
  */
 
-import { Box, Button, CheckButton, Entry, Label } from "../src/gtk4.ts";
-import { GTK_ORIENTATION_VERTICAL } from "../src/enums.ts";
+import {
+  Box,
+  Button,
+  CheckButton,
+  Entry,
+  GTK_ORIENTATION_VERTICAL,
+  Label,
+} from "../src/gtk4.ts";
 
 function assert(condition: boolean, message: string) {
   if (!condition) {

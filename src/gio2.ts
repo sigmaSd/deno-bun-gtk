@@ -1,6 +1,31 @@
 import { gio, glib } from "./ffi/gtk.ts";
 import { cstr, readCStr } from "./utils.ts";
-import { GObject } from "./gobject.ts";
+import { GObject } from "./gobject2.ts";
+
+// GApplicationFlags
+export const G_APPLICATION_FLAGS_NONE = 0;
+export const G_APPLICATION_IS_SERVICE = 1 << 0;
+export const G_APPLICATION_IS_LAUNCHER = 1 << 1;
+export const G_APPLICATION_HANDLES_OPEN = 1 << 2;
+export const G_APPLICATION_HANDLES_COMMAND_LINE = 1 << 3;
+export const G_APPLICATION_SEND_ENVIRONMENT = 1 << 4;
+export const G_APPLICATION_NON_UNIQUE = 1 << 5;
+export const G_APPLICATION_CAN_OVERRIDE_APP_ID = 1 << 6;
+export const G_APPLICATION_ALLOW_REPLACEMENT = 1 << 7;
+export const G_APPLICATION_REPLACE = 1 << 8;
+
+export const ApplicationFlags = {
+  NONE: G_APPLICATION_FLAGS_NONE,
+  IS_SERVICE: G_APPLICATION_IS_SERVICE,
+  IS_LAUNCHER: G_APPLICATION_IS_LAUNCHER,
+  HANDLES_OPEN: G_APPLICATION_HANDLES_OPEN,
+  HANDLES_COMMAND_LINE: G_APPLICATION_HANDLES_COMMAND_LINE,
+  SEND_ENVIRONMENT: G_APPLICATION_SEND_ENVIRONMENT,
+  NON_UNIQUE: G_APPLICATION_NON_UNIQUE,
+  CAN_OVERRIDE_APP_ID: G_APPLICATION_CAN_OVERRIDE_APP_ID,
+  ALLOW_REPLACEMENT: G_APPLICATION_ALLOW_REPLACEMENT,
+  REPLACE: G_APPLICATION_REPLACE,
+};
 
 // GMenu extends GMenuModel extends GObject
 export class Menu extends GObject {

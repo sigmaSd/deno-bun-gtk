@@ -1,6 +1,6 @@
 import { gtk3 } from "./ffi/gtk3.ts";
 import { cstr } from "./utils.ts";
-import { GObject } from "./gobject.ts";
+import { GObject } from "./gobject2.ts";
 
 export class Widget extends GObject {
   show(): void {
