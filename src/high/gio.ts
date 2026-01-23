@@ -457,17 +457,18 @@ export class DBusProxy extends GObject {
   }
 
   // Helper to call methods with uint32 parameter
-  callWithUint32(methodName: string, _value: number): void {
-    // For UnInhibit, we need to pass a uint32 in a tuple
-    // Note: g_variant_new with varargs is complex in FFI, so we use a workaround
-    // We'll construct the variant manually or use the sync call with null params
+  callWithUint32(methodName: string, value: number): void {
+    // Create a uint32 variant wrapped in a tuple for D-Bus call
+    const uint32Variant = gio.symbols.g_variant_new_uint32(value);
+    const variantPtrs = new BigUint64Array(1);
+    variantPtrs[0] = BigInt(Deno.UnsafePointer.value(uint32Variant!));
 
-    // Actually let's just call with the raw method
-    // Since we can't easily do varargs, we'll skip parameters for now
-    // and rely on the method working without
+    const tupleVariant = gio.symbols.g_variant_new_tuple(
+      Deno.UnsafePointer.of(variantPtrs),
+      1n,
+    );
 
-    // For UnInhibit specifically, just call it - this is a simplified approach
-    this.callSync(methodName, null);
+    this.callSync(methodName, tupleVariant);
   }
 }
 
@@ -481,6 +482,11 @@ export class Variant {
 
   static newString(value: string): Variant {
     const ptr = gio.symbols.g_variant_new_string(cstr(value));
+    return new Variant(ptr!);
+  }
+
+  static newUint32(value: number): Variant {
+    const ptr = gio.symbols.g_variant_new_uint32(value);
     return new Variant(ptr!);
   }
 

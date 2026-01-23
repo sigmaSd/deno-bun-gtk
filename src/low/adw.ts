@@ -247,26 +247,6 @@ export const adw = Deno.dlopen(LIB_PATHS.adwaita, {
     result: "void",
   },
   adw_clamp_set_child: { parameters: ["pointer", "pointer"], result: "void" },
-  adw_about_dialog_set_website: {
-    parameters: ["pointer", "buffer"],
-    result: "void",
-  },
-  adw_about_dialog_set_issue_url: {
-    parameters: ["pointer", "buffer"],
-    result: "void",
-  },
-  adw_about_dialog_set_developers: {
-    parameters: ["pointer", "pointer"],
-    result: "void",
-  },
-  adw_about_dialog_set_license_type: {
-    parameters: ["pointer", "i32"],
-    result: "void",
-  },
-  adw_about_dialog_set_application_icon: {
-    parameters: ["pointer", "buffer"],
-    result: "void",
-  },
   adw_is_initialized: { parameters: [], result: "bool" },
   adw_dialog_present: { parameters: ["pointer", "pointer"], result: "void" },
 });

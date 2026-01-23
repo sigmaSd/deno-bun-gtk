@@ -223,6 +223,10 @@ export const gio = Deno.dlopen(LIB_PATHS.gio, {
     parameters: ["buffer"],
     result: "pointer",
   },
+  g_variant_new_uint32: {
+    parameters: ["u32"],
+    result: "pointer",
+  },
   g_variant_new_tuple: {
     parameters: ["pointer", "usize"],
     result: "pointer",
