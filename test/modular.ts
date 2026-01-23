@@ -5,10 +5,10 @@
  * instead of the main entry point.
  */
 
-import { Button, Label } from "../src/gtk.ts";
-import { AdwWindow } from "../src/adw.ts";
-import { Orientation } from "../src/enums.ts";
 import { cstr } from "../src/utils.ts";
+import { Orientation } from "../src/enums.ts";
+import { Button, Label } from "../src/gtk4.ts";
+import { AdwWindow } from "../src/adw1.ts";
 
 function assert(condition: boolean, message: string) {
   if (!condition) {

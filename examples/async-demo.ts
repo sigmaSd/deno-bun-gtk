@@ -2,14 +2,14 @@
 
 import {
   Application,
-  ApplicationFlags,
   ApplicationWindow,
   Box,
   Button,
   Label,
-  Orientation,
-} from "@sigmasd/gtk";
-import { EventLoop } from "../src/eventloop.ts";
+} from "@sigmasd/gtk/gtk4";
+import { ApplicationFlags, Orientation } from "@sigmasd/gtk/enums";
+
+import { EventLoop } from "@sigmasd/gtk/eventloop";
 
 const APP_ID = "com.example.AsyncDemo";
 const APP_FLAGS = ApplicationFlags.NONE;

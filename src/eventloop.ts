@@ -30,8 +30,8 @@
  * @module
  */
 
-import type { Application } from "./gtk-ffi.ts";
-import { glib } from "./libs.ts";
+import type { Application } from "./gtk4.ts";
+import { glib } from "./ffi/gtk.ts";
 
 export interface EventLoopOptions {
   /**

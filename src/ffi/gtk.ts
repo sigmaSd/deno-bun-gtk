@@ -2,7 +2,7 @@
 // This file contains all dlopen calls and should not be part of the public API
 
 import "@sigma/deno-compat";
-import { LIB_PATHS } from "./libPaths/mod.ts";
+import { LIB_PATHS } from "../libPaths/mod.ts";
 
 // Load GLib - Core utilities and main loop
 export const glib = Deno.dlopen(LIB_PATHS.glib, {
@@ -625,6 +625,12 @@ export const adwaita = Deno.dlopen(LIB_PATHS.adwaita, {
     result: "void",
   },
   adw_combo_row_new: { parameters: [], result: "pointer" },
+  adw_switch_row_new: { parameters: [], result: "pointer" },
+  adw_switch_row_set_active: {
+    parameters: ["pointer", "bool"],
+    result: "void",
+  },
+  adw_switch_row_get_active: { parameters: ["pointer"], result: "bool" },
   adw_message_dialog_new: {
     parameters: ["pointer", "buffer", "buffer"],
     result: "pointer",

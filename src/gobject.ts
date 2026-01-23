@@ -1,4 +1,4 @@
-import { gobject } from "./libs.ts";
+import { gobject } from "./ffi/gtk.ts";
 import { createGValue, cstr, readCStr } from "./utils.ts";
 import {
   G_TYPE_BOOLEAN,

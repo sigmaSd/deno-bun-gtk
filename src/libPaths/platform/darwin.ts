@@ -7,6 +7,8 @@ const SEARCH_DIRS = [
 
 export const darwinLibPaths = {
   gtk: findLib("libgtk-4.1.dylib", SEARCH_DIRS),
+  gtk3: findLib("libgtk-3.0.dylib", SEARCH_DIRS),
+  app_indicator: findLib("libayatana-appindicator3.1.dylib", SEARCH_DIRS),
   adwaita: findLib("libadwaita-1.dylib", SEARCH_DIRS),
   glib: findLib("libglib-2.0.dylib", SEARCH_DIRS),
   gobject: findLib("libgobject-2.0.dylib", SEARCH_DIRS),

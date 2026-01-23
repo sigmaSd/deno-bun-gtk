@@ -1,5 +1,5 @@
 // deno-lint-ignore-file no-explicit-any
-import { adwaita, gio, glib, gobject, gtk } from "./libs.ts";
+import { adwaita, gio, glib, gobject, gtk } from "./ffi/gtk.ts";
 import { cstr, readCStr } from "./utils.ts";
 import { GObject } from "./gobject.ts";
 import type { Menu, SimpleAction } from "./gio.ts";

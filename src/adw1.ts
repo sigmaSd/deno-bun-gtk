@@ -1,6 +1,6 @@
-import { adwaita, gobject } from "./libs.ts";
+import { adwaita, gobject } from "./ffi/gtk.ts";
 import { cstr, readCStr } from "./utils.ts";
-import { type Application, ListBoxRow, Widget, Window } from "./gtk.ts";
+import { type Application, ListBoxRow, Widget, Window } from "./gtk4.ts";
 
 // LibAdwaita Window extends GtkWindow
 export class AdwWindow extends Window {
@@ -209,6 +209,22 @@ export class ComboRow extends ActionRow {
   constructor() {
     const ptr = adwaita.symbols.adw_combo_row_new();
     super(ptr);
+  }
+}
+
+// AdwSwitchRow extends AdwActionRow
+export class SwitchRow extends ActionRow {
+  constructor(ptr?: Deno.PointerValue) {
+    const actualPtr = ptr ?? adwaita.symbols.adw_switch_row_new();
+    super(actualPtr);
+  }
+
+  setActive(is_active: boolean): void {
+    adwaita.symbols.adw_switch_row_set_active(this.ptr, is_active);
+  }
+
+  getActive(): boolean {
+    return adwaita.symbols.adw_switch_row_get_active(this.ptr);
   }
 }
 

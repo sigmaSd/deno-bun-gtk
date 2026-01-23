@@ -1,4 +1,4 @@
-import { glib } from "./libs.ts";
+import { glib } from "./ffi/gtk.ts";
 
 // GLib MainLoop
 export class MainLoop {

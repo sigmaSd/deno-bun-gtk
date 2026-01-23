@@ -1,4 +1,4 @@
-import { gio, glib } from "./libs.ts";
+import { gio, glib } from "./ffi/gtk.ts";
 import { cstr, readCStr } from "./utils.ts";
 import { GObject } from "./gobject.ts";
 

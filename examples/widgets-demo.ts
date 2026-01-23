@@ -2,24 +2,25 @@
 
 import {
   Application,
-  ApplicationFlags,
   ApplicationWindow,
   Box,
   Button,
   DropDown,
   Entry,
   Frame,
-  HeaderBar,
   Label,
   ListBox,
   ListBoxRow,
-  Orientation,
   ScrolledWindow,
-  SelectionMode,
   StringList,
-  ToolbarView,
   type Widget,
-} from "@sigmasd/gtk";
+} from "@sigmasd/gtk/gtk4";
+import {
+  ApplicationFlags,
+  Orientation,
+  SelectionMode,
+} from "@sigmasd/gtk/enums";
+import { HeaderBar, ToolbarView } from "@sigmasd/gtk/adw1";
 
 const APP_ID = "com.example.WidgetsDemo";
 const APP_FLAGS = ApplicationFlags.NONE;
@@ -47,6 +48,7 @@ class WidgetsDemoWindow {
   #buildUI() {
     // Create header bar and set it as the window's titlebar
     const headerBar = new HeaderBar();
+
     this.#win.setTitlebar(headerBar);
 
     // Create toolbar view for content

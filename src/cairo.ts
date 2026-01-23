@@ -1,4 +1,4 @@
-import { cairo } from "./libs.ts";
+import { cairo } from "./ffi/gtk.ts";
 
 // Cairo Context Wrapper
 export class CairoContext {
