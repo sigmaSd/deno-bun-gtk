@@ -402,6 +402,10 @@ export class Window extends Widget {
   onDestroy(callback: () => void): number {
     return this.connect("destroy", callback);
   }
+
+  addAction(action: SimpleAction): void {
+    gio.symbols.g_action_map_add_action(this.ptr, action.ptr);
+  }
 }
 
 // GTK ApplicationWindow extends GtkWindow
